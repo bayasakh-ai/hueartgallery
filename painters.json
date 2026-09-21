@@ -1,0 +1,19 @@
+{
+  "painters": [
+    {
+      "name": "Зураачийн нэр 1",
+      "bio": "Add bio here - tell visitors about this painter's style, background, and artistic vision. What makes their work unique? What inspires them? Where have they exhibited before?",
+      "photo": ""
+    },
+    {
+      "name": "Зураачийн нэр 2",
+      "bio": "Add bio here - tell visitors about this painter's style, background, and artistic vision. What makes their work unique? What inspires them? Where have they exhibited before?",
+      "photo": ""
+    },
+    {
+      "name": "Зураачийн нэр 3",
+      "bio": "Add bio here - tell visitors about this painter's style, background, and artistic vision. What makes their work unique? What inspires them? Where have they exhibited before?",
+      "photo": ""
+    }
+  ]
+}

@@ -1,0 +1,79 @@
+backend:
+  name: github
+  repo: bayasakh-ai/hueartgallery
+  branch: main
+
+# Where images you upload through the CMS get stored, and how the site
+# should link to them. Your existing images (gan-erdene.jpeg etc.) stay
+# exactly where they are in the repo root - this only affects new uploads.
+media_folder: "images"
+public_folder: "/images"
+
+collections:
+  - name: "paintings"
+    label: "Paintings"
+    files:
+      - name: "paintings"
+        label: "All Paintings"
+        file: "data/paintings.json"
+        fields:
+          - name: "paintings"
+            label: "Paintings"
+            widget: "list"
+            summary: "{{title}} — {{artist}} ({{status}})"
+            fields:
+              - {label: "ID (must be unique, used in the painting's link)", name: "id", widget: "string"}
+              - {label: "Title", name: "title", widget: "string"}
+              - {label: "Artist", name: "artist", widget: "string"}
+              - {label: "Image", name: "image", widget: "image"}
+              - {label: "Description", name: "description", widget: "text"}
+              - {label: "Medium", name: "medium", widget: "string"}
+              - {label: "Size", name: "size", widget: "string"}
+              - {label: "Year", name: "year", widget: "string"}
+              - {label: "Frame", name: "frame", widget: "string"}
+              - {label: "Signature", name: "signature", widget: "string", default: "Signed by artist"}
+              - {label: "Authenticity", name: "authenticity", widget: "string", default: "Certificate of Authenticity included"}
+              - {label: "Price", name: "price", widget: "string", hint: "Include currency, e.g. 2,500,000 ₮"}
+              - label: "Status"
+                name: "status"
+                widget: "select"
+                options: ["available", "sold", "reserved"]
+                default: "available"
+
+  - name: "painters"
+    label: "Painters"
+    files:
+      - name: "painters"
+        label: "All Painters"
+        file: "data/painters.json"
+        fields:
+          - name: "painters"
+            label: "Painters"
+            widget: "list"
+            summary: "{{name}}"
+            fields:
+              - {label: "Name", name: "name", widget: "string"}
+              - {label: "Bio", name: "bio", widget: "text"}
+              - {label: "Photo", name: "photo", widget: "image", required: false}
+
+  - name: "events"
+    label: "Exhibitions & Events"
+    files:
+      - name: "events"
+        label: "All Events"
+        file: "data/events.json"
+        fields:
+          - name: "events"
+            label: "Events"
+            widget: "list"
+            summary: "{{title}} ({{status}})"
+            fields:
+              - {label: "Title", name: "title", widget: "string"}
+              - {label: "Date", name: "date", widget: "string", hint: "Free text is fine, e.g. \"March 2026\" or \"Coming soon\""}
+              - {label: "Description", name: "description", widget: "text"}
+              - label: "Status"
+                name: "status"
+                widget: "select"
+                options: ["upcoming", "ended"]
+                default: "upcoming"
+              - {label: "Image", name: "image", widget: "image", required: false}
