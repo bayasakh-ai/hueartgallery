@@ -1,0 +1,479 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Painting Details - Hue Art Gallery</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Georgia", serif;
+        line-height: 1.6;
+        color: #333;
+      }
+
+      /* Navigation */
+      nav {
+        background: rgba(0, 0, 0, 0.9);
+        padding: 20px 0;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
+
+      nav ul {
+        list-style: none;
+        display: flex;
+        justify-content: center;
+        gap: 40px;
+        flex-wrap: wrap;
+      }
+
+      nav a {
+        color: white;
+        text-decoration: none;
+        font-size: 1.1rem;
+        transition: color 0.3s;
+      }
+
+      nav a:hover {
+        color: #ffd700;
+      }
+
+      /* Back Button */
+      .back-button {
+        max-width: 1200px;
+        margin: 30px auto;
+        padding: 0 20px;
+      }
+
+      .back-button a {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        color: #667eea;
+        text-decoration: none;
+        font-size: 1rem;
+        transition: color 0.3s;
+      }
+
+      .back-button a:hover {
+        color: #764ba2;
+      }
+
+      /* Container */
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 40px 20px 80px;
+      }
+
+      /* Painting Detail Layout */
+      .painting-detail {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 60px;
+        align-items: start;
+      }
+
+      .painting-image-section {
+        position: sticky;
+        top: 100px;
+      }
+
+      .painting-image {
+        width: 100%;
+        border-radius: 8px;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+      }
+
+      .painting-info {
+        padding: 20px 0;
+      }
+
+      .painting-info h1 {
+        font-size: 2.8rem;
+        color: #333;
+        margin-bottom: 15px;
+        font-weight: 400;
+      }
+
+      .artist-name {
+        font-size: 1.5rem;
+        color: #667eea;
+        font-style: italic;
+        margin-bottom: 30px;
+      }
+
+      .description {
+        font-size: 1.1rem;
+        line-height: 1.9;
+        color: #555;
+        margin-bottom: 40px;
+        padding: 25px;
+        background: #f9f9f9;
+        border-left: 4px solid #667eea;
+        border-radius: 4px;
+      }
+
+      /* Details Grid */
+      .details-grid {
+        display: grid;
+        gap: 20px;
+        margin-bottom: 40px;
+      }
+
+      .detail-item {
+        display: grid;
+        grid-template-columns: 150px 1fr;
+        padding: 15px 0;
+        border-bottom: 1px solid #eee;
+      }
+
+      .detail-label {
+        font-weight: bold;
+        color: #667eea;
+        font-size: 1rem;
+      }
+
+      .detail-value {
+        color: #555;
+        font-size: 1rem;
+      }
+
+      /* Price Section */
+      .price-section {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 30px;
+        border-radius: 8px;
+        margin-bottom: 30px;
+      }
+
+      .price-section h3 {
+        font-size: 1.3rem;
+        margin-bottom: 10px;
+        font-weight: 400;
+      }
+
+      .price {
+        font-size: 2.5rem;
+        font-weight: bold;
+        margin-bottom: 15px;
+      }
+
+      .availability {
+        font-size: 1rem;
+        opacity: 0.9;
+      }
+
+      /* Contact Section */
+      .contact-section {
+        background: #f9f9f9;
+        padding: 30px;
+        border-radius: 8px;
+        text-align: center;
+      }
+
+      .contact-section h3 {
+        color: #667eea;
+        font-size: 1.5rem;
+        margin-bottom: 15px;
+      }
+
+      .contact-section p {
+        color: #666;
+        margin-bottom: 20px;
+      }
+
+      .contact-button {
+        display: inline-block;
+        background: #667eea;
+        color: white;
+        padding: 15px 40px;
+        border-radius: 30px;
+        text-decoration: none;
+        font-size: 1.1rem;
+        transition: all 0.3s;
+      }
+
+      .contact-button:hover {
+        background: #764ba2;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+      }
+
+      /* Footer */
+      footer {
+        background: #333;
+        color: white;
+        text-align: center;
+        padding: 30px;
+        font-size: 0.9rem;
+        margin-top: 60px;
+      }
+
+      /* Responsive */
+      @media (max-width: 968px) {
+        .painting-detail {
+          grid-template-columns: 1fr;
+          gap: 40px;
+        }
+
+        .painting-image-section {
+          position: relative;
+          top: 0;
+        }
+
+        .painting-info h1 {
+          font-size: 2.2rem;
+        }
+
+        .detail-item {
+          grid-template-columns: 120px 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Navigation -->
+    <nav>
+      <ul>
+        <li><a href="index.html#home">Home</a></li>
+        <li><a href="index.html#about">About Us</a></li>
+        <li><a href="index.html#exhibitions">Exhibitions</a></li>
+        <li><a href="index.html#collection">Collection</a></li>
+        <li><a href="index.html#painters">Painters</a></li>
+        <li><a href="index.html#contact">Visit</a></li>
+      </ul>
+    </nav>
+
+    <!-- Back Button -->
+    <div class="back-button">
+      <a href="index.html#collection">← Back to Collection</a>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container">
+      <div class="painting-detail">
+        <!-- Image Section -->
+        <div class="painting-image-section">
+          <img
+            id="paintingImage"
+            src=""
+            alt="Painting"
+            class="painting-image"
+          />
+        </div>
+
+        <!-- Info Section -->
+        <div class="painting-info">
+          <h1 id="paintingTitle">Loading...</h1>
+          <p class="artist-name" id="artistName"></p>
+
+          <div class="description">
+            <p id="paintingDescription"></p>
+          </div>
+
+          <!-- Details -->
+          <div class="details-grid">
+            <div class="detail-item">
+              <span class="detail-label">Medium:</span>
+              <span class="detail-value" id="medium"></span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Size:</span>
+              <span class="detail-value" id="size"></span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Year:</span>
+              <span class="detail-value" id="year"></span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Frame:</span>
+              <span class="detail-value" id="frame"></span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Signature:</span>
+              <span class="detail-value" id="signature"></span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Authenticity:</span>
+              <span class="detail-value" id="authenticity"></span>
+            </div>
+          </div>
+
+          <!-- Price -->
+          <div class="price-section">
+            <h3>Price</h3>
+            <div class="price" id="price">0</div>
+            <p class="availability" id="availability"></p>
+          </div>
+
+          <!-- Contact -->
+          <div class="contact-section">
+            <h3>Interested in this piece?</h3>
+            <p>Contact us to schedule a viewing or discuss purchase options</p>
+            <a href="mailto:info@hueartgallery.com" class="contact-button"
+              >Contact Gallery</a
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+      <p>&copy; 2024 Hue Art Gallery. All rights reserved.</p>
+      <p style="margin-top: 10px">
+        Celebrating art, one brushstroke at a time.
+      </p>
+    </footer>
+
+    <script>
+      // Painting database - ADD YOUR PAINTINGS HERE
+      const paintings = {
+        1: {
+          title: "Sunset Dreams",
+          artist: "Gan-Erdene",
+          image: "gan-erdene.jpeg",
+          description: "бүтээлийн тайлбар",
+          medium: "Oil on Canvas",
+          size: '24" × 36" (61cm × 91cm)',
+          year: "2024",
+          frame: "Unframed (framing available)",
+          signature: "Signed by artist",
+          authenticity: "Certificate of Authenticity included",
+          price: " 2,500,000 ₮",
+          availability: "✓ Available for purchase",
+        },
+        2: {
+          title: "Ocean Whispers",
+          artist: "Bolortuya",
+          image: "bolortuya.jpeg",
+          description: "бүтээлийн тайлбар",
+          medium: "Acrylic on Canvas",
+          size: '30" × 40" (76cm × 102cm)',
+          year: "2024",
+          frame: "Gallery wrapped",
+          signature: "Signed by artist",
+          authenticity: "Certificate of Authenticity included",
+          price: " 3,200,000 ₮",
+          availability: "✓ Available for purchase",
+        },
+        3: {
+          title: "Mountain Serenity",
+          artist: "Tsegmed",
+          image: "tsegmed.jpeg",
+          description: "бүтээлийн тайлбар",
+          medium: "Oil on Canvas",
+          size: '28" × 42" (71cm × 107cm)',
+          year: "2023",
+          frame: "Unframed",
+          signature: "Signed by artist",
+          authenticity: "Certificate of Authenticity included",
+          price: " 2,800,000 ₮",
+          availability: "✓ Available for purchase",
+        },
+        4: {
+          title: "Urban Rhythm",
+          artist: "Bazarvaani",
+          image: "bazarvaani-2.jpeg",
+          description: "бүтээлийн тайлбар",
+          medium: "Mixed Media on Canvas",
+          size: '36" × 48" (91cm × 122cm)',
+          year: "2024",
+          frame: "Black floating frame",
+          signature: "Signed by artist",
+          authenticity: "Certificate of Authenticity included",
+          price: " 4,500,000 ₮",
+          availability: "✓ Available for purchase",
+        },
+        5: {
+          title: "Abstract Emotions",
+          artist: "Artist Name",
+          image: "4.jpeg",
+          description: "бүтээлийн тайлбар",
+          medium: "Acrylic on Canvas",
+          size: '24" × 24" (61cm × 61cm)',
+          year: "2024",
+          frame: "Unframed",
+          signature: "Signed by artist",
+          authenticity: "Certificate of Authenticity included",
+          price: " 1,800,000 ₮",
+          availability: "✓ Available for purchase",
+        },
+        6: {
+          title: "Nature's Dance",
+          artist: "Artist Name",
+          image: "5.jpeg",
+          description: "бүтээлийн тайлбар",
+          medium: "Watercolor on Paper",
+          size: '18" × 24" (46cm × 61cm)',
+          year: "2024",
+          frame: "White mat, ready to frame",
+          signature: "Signed by artist",
+          authenticity: "Certificate of Authenticity included",
+          price: " 1,200,000 ₮",
+          availability: "✓ Available for purchase",
+        },
+        7: {
+          title: "Celestial Journey",
+          artist: "Narangerel",
+          image: "narangerel.jpeg",
+          description: "бүтээлийн тайлбар",
+          medium: "Oil on Canvas",
+          size: '32" × 44" (81cm × 112cm)',
+          year: "2023",
+          frame: "Gallery wrapped",
+          signature: "Signed by artist",
+          authenticity: "Certificate of Authenticity included",
+          price: " 3,800,000 ₮",
+          availability: "✓ Available for purchase",
+        },
+      };
+
+      // Get painting ID from URL parameter
+      const urlParams = new URLSearchParams(window.location.search);
+      const paintingId = urlParams.get("id");
+
+      // Load painting data
+      if (paintingId && paintings[paintingId]) {
+        const painting = paintings[paintingId];
+
+        document.getElementById("paintingImage").src = painting.image;
+        document.getElementById("paintingImage").alt = painting.title;
+        document.getElementById("paintingTitle").textContent = painting.title;
+        document.getElementById("artistName").textContent =
+          "by " + painting.artist;
+        document.getElementById("paintingDescription").textContent =
+          painting.description;
+        document.getElementById("medium").textContent = painting.medium;
+        document.getElementById("size").textContent = painting.size;
+        document.getElementById("year").textContent = painting.year;
+        document.getElementById("frame").textContent = painting.frame;
+        document.getElementById("signature").textContent = painting.signature;
+        document.getElementById("authenticity").textContent =
+          painting.authenticity;
+        document.getElementById("price").textContent = painting.price;
+        document.getElementById("availability").textContent =
+          painting.availability;
+
+        // Update page title
+        document.title = painting.title + " - Hue Art Gallery";
+      } else {
+        // Painting not found
+        document.getElementById("paintingTitle").textContent =
+          "Painting Not Found";
+        document.getElementById("artistName").textContent = "";
+        document.getElementById("paintingDescription").textContent =
+          "This painting could not be found. Please return to the collection.";
+      }
+    </script>
+  </body>
+</html>
