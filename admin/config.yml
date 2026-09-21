@@ -1,7 +1,25 @@
+# Use DecapBridge classic auth (required)
 backend:
-  name: github
+  name: git-gateway
   repo: bayasakh-ai/hueartgallery
   branch: main
+  identity_url: https://auth.decapbridge.com/sites/cc757d21-403f-4302-9d7b-3c7638a2de0a
+  gateway_url: https://gateway.decapbridge.com
+
+  # See who did what (optional)
+  commit_messages:
+    create: Create {{collection}} “{{slug}}” - {{author-name}} <{{author-login}}> via DecapBridge
+    update: Update {{collection}} “{{slug}}” - {{author-name}} <{{author-login}}> via DecapBridge
+    delete: Delete {{collection}} “{{slug}}” - {{author-name}} <{{author-login}}> via DecapBridge
+    uploadMedia: Upload “{{path}}” - {{author-name}} <{{author-login}}> via DecapBridge
+    deleteMedia: Delete “{{path}}” - {{author-name}} <{{author-login}}> via DecapBridge
+    openAuthoring: Message {{message}} - {{author-name}} <{{author-login}}> via DecapBridge
+
+# Better Decap + Bridge logo (optional)
+logo_url: https://decapbridge.com/decapcms-with-bridge.svg
+
+# Add site links in Decap CMS (optional)
+site_url: https://hueartgallery.netlify.app
 
 # Where images you upload through the CMS get stored, and how the site
 # should link to them. Your existing images (gan-erdene.jpeg etc.) stay
@@ -22,18 +40,37 @@ collections:
             widget: "list"
             summary: "{{title}} — {{artist}} ({{status}})"
             fields:
-              - {label: "ID (must be unique, used in the painting's link)", name: "id", widget: "string"}
-              - {label: "Title", name: "title", widget: "string"}
-              - {label: "Artist", name: "artist", widget: "string"}
-              - {label: "Image", name: "image", widget: "image"}
-              - {label: "Description", name: "description", widget: "text"}
-              - {label: "Medium", name: "medium", widget: "string"}
-              - {label: "Size", name: "size", widget: "string"}
-              - {label: "Year", name: "year", widget: "string"}
-              - {label: "Frame", name: "frame", widget: "string"}
-              - {label: "Signature", name: "signature", widget: "string", default: "Signed by artist"}
-              - {label: "Authenticity", name: "authenticity", widget: "string", default: "Certificate of Authenticity included"}
-              - {label: "Price", name: "price", widget: "string", hint: "Include currency, e.g. 2,500,000 ₮"}
+              - {
+                  label: "ID (must be unique, used in the painting's link)",
+                  name: "id",
+                  widget: "string",
+                }
+              - { label: "Title", name: "title", widget: "string" }
+              - { label: "Artist", name: "artist", widget: "string" }
+              - { label: "Image", name: "image", widget: "image" }
+              - { label: "Description", name: "description", widget: "text" }
+              - { label: "Medium", name: "medium", widget: "string" }
+              - { label: "Size", name: "size", widget: "string" }
+              - { label: "Year", name: "year", widget: "string" }
+              - { label: "Frame", name: "frame", widget: "string" }
+              - {
+                  label: "Signature",
+                  name: "signature",
+                  widget: "string",
+                  default: "Signed by artist",
+                }
+              - {
+                  label: "Authenticity",
+                  name: "authenticity",
+                  widget: "string",
+                  default: "Certificate of Authenticity included",
+                }
+              - {
+                  label: "Price",
+                  name: "price",
+                  widget: "string",
+                  hint: "Include currency, e.g. 2,500,000 ₮",
+                }
               - label: "Status"
                 name: "status"
                 widget: "select"
@@ -52,9 +89,14 @@ collections:
             widget: "list"
             summary: "{{name}}"
             fields:
-              - {label: "Name", name: "name", widget: "string"}
-              - {label: "Bio", name: "bio", widget: "text"}
-              - {label: "Photo", name: "photo", widget: "image", required: false}
+              - { label: "Name", name: "name", widget: "string" }
+              - { label: "Bio", name: "bio", widget: "text" }
+              - {
+                  label: "Photo",
+                  name: "photo",
+                  widget: "image",
+                  required: false,
+                }
 
   - name: "events"
     label: "Exhibitions & Events"
@@ -68,12 +110,22 @@ collections:
             widget: "list"
             summary: "{{title}} ({{status}})"
             fields:
-              - {label: "Title", name: "title", widget: "string"}
-              - {label: "Date", name: "date", widget: "string", hint: "Free text is fine, e.g. \"March 2026\" or \"Coming soon\""}
-              - {label: "Description", name: "description", widget: "text"}
+              - { label: "Title", name: "title", widget: "string" }
+              - {
+                  label: "Date",
+                  name: "date",
+                  widget: "string",
+                  hint: 'Free text is fine, e.g. "March 2026" or "Coming soon"',
+                }
+              - { label: "Description", name: "description", widget: "text" }
               - label: "Status"
                 name: "status"
                 widget: "select"
                 options: ["upcoming", "ended"]
                 default: "upcoming"
-              - {label: "Image", name: "image", widget: "image", required: false}
+              - {
+                  label: "Image",
+                  name: "image",
+                  widget: "image",
+                  required: false,
+                }
