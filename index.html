@@ -1,13 +1,601 @@
 <!doctype html>
-<html>
+<html lang="en">
   <head>
-    <meta charset="utf-8" />
+    <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Content Manager - Hue Art Gallery</title>
-    <meta name="robots" content="noindex" />
+    <title>Hue Art Gallery</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Georgia", serif;
+        line-height: 1.6;
+        color: #333;
+      }
+
+      /* Navigation */
+      nav {
+        background: rgba(0, 0, 0, 0.9);
+        padding: 20px 0;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
+
+      nav ul {
+        list-style: none;
+        display: flex;
+        justify-content: center;
+        gap: 40px;
+        flex-wrap: wrap;
+      }
+
+      nav a {
+        color: white;
+        text-decoration: none;
+        font-size: 1.1rem;
+        transition: color 0.3s;
+      }
+
+      nav a:hover {
+        color: #ffd700;
+      }
+
+      /* Hero Image Section */
+      .hero-image {
+        position: relative;
+        height: 600px;
+        background:
+          linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)),
+          url("images/header.jpeg");
+        background-size: cover;
+        background-position: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+      }
+
+      .hero-content {
+        color: white;
+        z-index: 2;
+      }
+
+      .hero-content h1 {
+        font-size: 5rem;
+        margin-bottom: 20px;
+        font-weight: 300;
+        letter-spacing: 8px;
+        text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5);
+      }
+
+      .hero-content p {
+        font-size: 1.5rem;
+        font-style: italic;
+        text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.5);
+      }
+
+      .hero-note {
+        background: rgba(255, 243, 205, 0.95);
+        border-left: 4px solid #ffc107;
+        padding: 15px;
+        margin: 20px auto;
+        max-width: 800px;
+        text-align: left;
+        border-radius: 4px;
+      }
+
+      .hero-note p {
+        color: #856404;
+        font-size: 0.9rem;
+        font-style: normal;
+        text-shadow: none;
+      }
+
+      /* Container */
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 80px 20px;
+      }
+
+      /* Section Titles */
+      .section-title {
+        font-size: 2.8rem;
+        margin-bottom: 20px;
+        text-align: center;
+        color: #667eea;
+        font-weight: 300;
+      }
+
+      .section-subtitle {
+        text-align: center;
+        color: #666;
+        font-size: 1.2rem;
+        margin-bottom: 50px;
+        font-style: italic;
+      }
+
+      /* About Section */
+      .about {
+        background: #f9f9f9;
+      }
+
+      .about-content {
+        max-width: 800px;
+        margin: 0 auto;
+        font-size: 1.15rem;
+        line-height: 2;
+        color: #555;
+        text-align: center;
+      }
+
+      /* Exhibitions Section */
+      .exhibitions-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        gap: 40px;
+        margin-top: 40px;
+      }
+
+      .exhibition-card {
+        background: white;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease;
+      }
+
+      .exhibition-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+      }
+
+      .exhibition-image {
+        height: 250px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1.2rem;
+        font-style: italic;
+      }
+
+      .exhibition-content {
+        padding: 30px;
+      }
+
+      .exhibition-content h3 {
+        color: #667eea;
+        font-size: 1.8rem;
+        margin-bottom: 10px;
+      }
+
+      .exhibition-date {
+        color: #999;
+        font-size: 0.95rem;
+        margin-bottom: 15px;
+      }
+
+      .exhibition-content p {
+        color: #666;
+        line-height: 1.8;
+      }
+
+      .exhibition-status {
+        display: inline-block;
+        font-size: 0.8rem;
+        padding: 4px 12px;
+        border-radius: 20px;
+        margin-left: 10px;
+      }
+
+      .exhibition-status.upcoming {
+        background: rgba(102, 126, 234, 0.15);
+        color: #667eea;
+      }
+
+      .exhibition-status.ended {
+        background: rgba(153, 153, 153, 0.15);
+        color: #999;
+      }
+
+      .painting-status {
+        display: inline-block;
+        font-size: 0.85rem;
+        padding: 3px 14px;
+        border-radius: 20px;
+        background: rgba(255, 215, 0, 0.85);
+        color: #000;
+        margin-top: 8px;
+      }
+
+      /* Gallery Grid with Interactive Hover */
+      .gallery-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 30px;
+        margin-bottom: 80px;
+      }
+
+      .gallery-item {
+        position: relative;
+        overflow: hidden;
+        border-radius: 8px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        transition:
+          transform 0.3s ease,
+          box-shadow 0.3s ease;
+        background: #f5f5f5;
+        aspect-ratio: 4/3;
+        cursor: pointer;
+      }
+
+      .gallery-item:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+      }
+
+      .gallery-item img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.4s ease;
+      }
+
+      .gallery-item:hover img {
+        transform: scale(1.05);
+      }
+
+      .upload-placeholder {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+        color: #999;
+        font-size: 1.1rem;
+        text-align: center;
+        padding: 20px;
+      }
+
+      /* Hover Overlay */
+      .gallery-overlay {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: linear-gradient(
+          to top,
+          rgba(0, 0, 0, 0.9) 0%,
+          rgba(0, 0, 0, 0.7) 70%,
+          transparent 100%
+        );
+        color: white;
+        padding: 25px;
+        transform: translateY(100%);
+        transition: transform 0.4s ease;
+      }
+
+      .gallery-item:hover .gallery-overlay {
+        transform: translateY(0);
+      }
+
+      .gallery-overlay h3 {
+        font-size: 1.4rem;
+        margin-bottom: 8px;
+        font-weight: 400;
+        letter-spacing: 1px;
+      }
+
+      .gallery-overlay .painter-name {
+        font-size: 1rem;
+        color: #ffd700;
+        font-style: italic;
+        margin-bottom: 12px;
+      }
+
+      .gallery-overlay .details-btn {
+        display: inline-block;
+        background: rgba(255, 215, 0, 0.2);
+        border: 1px solid #ffd700;
+        color: #ffd700;
+        padding: 8px 20px;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        transition: all 0.3s ease;
+        text-decoration: none;
+      }
+
+      .gallery-overlay .details-btn:hover {
+        background: #ffd700;
+        color: #000;
+      }
+
+      /* Painters Section */
+      .painters {
+        background: #f9f9f9;
+        padding: 80px 20px;
+      }
+
+      .painters-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 40px;
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      .painter-card {
+        background: white;
+        padding: 30px;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      }
+
+      .painter-card h3 {
+        color: #667eea;
+        font-size: 1.8rem;
+        margin-bottom: 15px;
+      }
+
+      .painter-card p {
+        color: #666;
+        line-height: 1.8;
+      }
+
+      /* Contact Section */
+      .contact {
+        text-align: center;
+        padding: 80px 20px;
+      }
+
+      .contact-info {
+        background: white;
+        max-width: 600px;
+        margin: 30px auto;
+        padding: 40px;
+        border-radius: 8px;
+        box-shadow: 0 2px 15px rgba(0, 0, 0, 0.08);
+      }
+
+      .contact-info h3 {
+        color: #667eea;
+        margin-bottom: 20px;
+        font-size: 1.5rem;
+      }
+
+      .contact-info p {
+        font-size: 1.1rem;
+        color: #555;
+        margin: 10px 0;
+      }
+
+      /* Footer */
+      footer {
+        background: #333;
+        color: white;
+        text-align: center;
+        padding: 30px;
+        font-size: 0.9rem;
+      }
+
+      /* Responsive */
+      @media (max-width: 768px) {
+        .hero-content h1 {
+          font-size: 3rem;
+          letter-spacing: 4px;
+        }
+
+        nav ul {
+          gap: 20px;
+        }
+
+        .section-title {
+          font-size: 2rem;
+        }
+
+        .gallery-overlay {
+          transform: translateY(0);
+          background: linear-gradient(
+            to top,
+            rgba(0, 0, 0, 0.85) 0%,
+            rgba(0, 0, 0, 0.6) 70%,
+            transparent 100%
+          );
+        }
+      }
+    </style>
   </head>
   <body>
-    <!-- Decap CMS admin UI. Loaded from CDN, no build step needed. -->
-    <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
+    <!-- Navigation -->
+    <nav>
+      <ul>
+        <li><a href="#home">Home</a></li>
+        <li><a href="#about">About Us</a></li>
+        <li><a href="#exhibitions">Exhibitions</a></li>
+        <li><a href="#collection">Collection</a></li>
+        <li><a href="#painters">Painters</a></li>
+        <li><a href="#contact">Visit</a></li>
+      </ul>
+    </nav>
+
+    <!-- Hero Image Section -->
+    <div class="hero-image" id="home">
+      <div class="hero-content">
+        <h1>HUE ART GALLERY</h1>
+        <p>Where Colors Come to Life</p>
+      </div>
+    </div>
+
+    <!-- About Section -->
+    <section class="about" id="about">
+      <div class="container">
+        <h2 class="section-title">About Us</h2>
+        <div class="about-content">
+          <p>
+            Hue Art Gallery is a vibrant space dedicated to showcasing
+            contemporary art that challenges perspectives and ignites
+            imagination. Founded with a passion for celebrating artistic
+            expression, we bring together emerging and established artists to
+            create a dynamic cultural experience.
+          </p>
+          <p style="margin-top: 30px">
+            Our mission is to make art accessible to everyone while supporting
+            artists in their creative journeys. We believe that art has the
+            power to transform communities and inspire change.
+          </p>
+          <p style="margin-top: 20px; font-style: italic; color: #999">
+            [Replace this text with your gallery's actual story and mission]
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Exhibitions Section -->
+    <section class="container" id="exhibitions">
+      <h2 class="section-title">Current & Upcoming Exhibitions</h2>
+      <p class="section-subtitle">Discover our latest shows and events</p>
+
+      <div class="exhibitions-grid" id="exhibitionsGrid">
+        <!-- Filled in by JavaScript from data/events.json -->
+      </div>
+    </section>
+
+    <!-- Gallery Section -->
+    <section class="container" id="collection">
+      <h2 class="section-title">Our Collection</h2>
+      <p class="section-subtitle">Explore our curated selection of artworks</p>
+      <div class="gallery-grid" id="galleryGrid">
+        <!-- Filled in by JavaScript from data/paintings.json -->
+      </div>
+    </section>
+
+    <!-- Painters Section -->
+    <section class="painters" id="painters">
+      <h2 class="section-title">Our Painters</h2>
+      <p class="section-subtitle">Meet the artists behind the masterpieces</p>
+      <div class="painters-grid" id="paintersGrid">
+        <!-- Filled in by JavaScript from data/painters.json -->
+      </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="contact" id="contact">
+      <h2 class="section-title">Visit Us</h2>
+      <div class="contact-info">
+        <h3>Hue Art Gallery</h3>
+        <p>
+          <strong>Address:</strong><br />
+          [Your Street Address]<br />
+          [City, State ZIP]
+        </p>
+        <p>
+          <strong>Hours:</strong><br />
+          [Add your opening hours]
+        </p>
+        <p>
+          <strong>Contact:</strong><br />
+          [Phone] | [Email]
+        </p>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+      <p>&copy; 2024 Hue Art Gallery. All rights reserved.</p>
+      <p style="margin-top: 10px">
+        Celebrating art, one brushstroke at a time.
+      </p>
+    </footer>
+
+    <script>
+      // Loads paintings, painters, and events from the JSON files that
+      // Decap CMS edits, then builds each section's cards.
+
+      function escapeHtml(str) {
+        const div = document.createElement("div");
+        div.textContent = str == null ? "" : str;
+        return div.innerHTML;
+      }
+
+      fetch("data/paintings.json")
+        .then((res) => res.json())
+        .then((data) => {
+          const grid = document.getElementById("galleryGrid");
+          grid.innerHTML = data.paintings
+            .map((p) => {
+              const statusBadge =
+                p.status && p.status !== "available"
+                  ? `<span class="painting-status">${escapeHtml(
+                      p.status === "sold" ? "Sold" : "Reserved",
+                    )}</span>`
+                  : "";
+              return `
+                <a href="painting-details.html?id=${encodeURIComponent(p.id)}" class="gallery-item">
+                  <img src="${escapeHtml(p.image)}" alt="${escapeHtml(p.title)}" />
+                  <div class="gallery-overlay">
+                    <h3>${escapeHtml(p.title)}</h3>
+                    <p class="painter-name">by ${escapeHtml(p.artist)}</p>
+                    ${statusBadge}
+                    <span class="details-btn">View Details</span>
+                  </div>
+                </a>
+              `;
+            })
+            .join("");
+        })
+        .catch((err) => console.error("Could not load paintings:", err));
+
+      fetch("data/painters.json")
+        .then((res) => res.json())
+        .then((data) => {
+          const grid = document.getElementById("paintersGrid");
+          grid.innerHTML = data.painters
+            .map(
+              (painter) => `
+                <div class="painter-card">
+                  <h3>${escapeHtml(painter.name)}</h3>
+                  <p>${escapeHtml(painter.bio)}</p>
+                </div>
+              `,
+            )
+            .join("");
+        })
+        .catch((err) => console.error("Could not load painters:", err));
+
+      fetch("data/events.json")
+        .then((res) => res.json())
+        .then((data) => {
+          const grid = document.getElementById("exhibitionsGrid");
+          grid.innerHTML = data.events
+            .map((ev) => {
+              const statusLabel =
+                ev.status === "upcoming" ? "Upcoming" : "Ended";
+              const imageContent = ev.image
+                ? `<img src="${escapeHtml(ev.image)}" alt="${escapeHtml(ev.title)}" style="width:100%;height:100%;object-fit:cover;" />`
+                : "Үзэсгэлэнгийн зураг";
+              return `
+                <div class="exhibition-card">
+                  <div class="exhibition-image">${imageContent}</div>
+                  <div class="exhibition-content">
+                    <h3>${escapeHtml(ev.title)}</h3>
+                    <p class="exhibition-date">
+                      ${escapeHtml(ev.date)}
+                      <span class="exhibition-status ${ev.status}">${statusLabel}</span>
+                    </p>
+                    <p>${escapeHtml(ev.description)}</p>
+                  </div>
+                </div>
+              `;
+            })
+            .join("");
+        })
+        .catch((err) => console.error("Could not load events:", err));
+    </script>
   </body>
 </html>
