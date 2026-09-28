@@ -1,0 +1,20 @@
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "20"
+
+# Make sure /admin (no trailing slash) opens the CMS correctly.
+[[redirects]]
+  from = "/admin"
+  to = "/admin/"
+  status = 301
+
+# Every other address that isn't a real file (a painting page, /about, ...)
+# is served by the app, so shared links and Refresh work. Real files such as
+# /admin/, /data/*.json and /images/* are still served as they are.
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

@@ -1,0 +1,31 @@
+{
+  "events": [
+    {
+      "title": "Үзэсгэлэнгийн нэр",
+      "start_date": "2026-03-01",
+      "end_date": "2026-04-01",
+      "location": "",
+      "description": "Үзэсгэлэнгийн тайлбар",
+      "painters": [],
+      "paintings": []
+    },
+    {
+      "title": "Үзэсгэлэнгийн нэр 2",
+      "start_date": "2026-06-01",
+      "end_date": "2026-07-15",
+      "location": "",
+      "description": "Үзэсгэлэнгийн тайлбар",
+      "painters": [],
+      "paintings": []
+    },
+    {
+      "title": "Үзэсгэлэнгийн нэр 3",
+      "start_date": "2026-11-01",
+      "end_date": "2026-12-01",
+      "location": "",
+      "description": "Үзэсгэлэнгийн тайлбар",
+      "painters": [],
+      "paintings": []
+    }
+  ]
+}

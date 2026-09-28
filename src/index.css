@@ -1,0 +1,159 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,500&family=Inter:wght@300;400;500;600&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  /* ============================================
+     DESIGN TOKENS: change colors and fonts here.
+     Colors are "R G B" triplets so Tailwind opacity
+     modifiers (text-cream/70, bg-ink/40) keep working.
+     Palette is taken from the Hue logo.
+     ============================================ */
+  :root {
+    --rgb-cream: 250 246 241;       /* #faf6f1 page background */
+    --rgb-cream-dark: 243 236 227;  /* #f3ece3 soft panels */
+    --rgb-ink: 43 35 32;            /* #2b2320 main text / buttons */
+    --rgb-ink-soft: 85 72 63;       /* #55483f body text */
+    --rgb-ink-muted: 122 107 95;    /* #7a6b5f small captions */
+    --rgb-line: 232 221 210;        /* #e8ddd2 dividers */
+    --rgb-accent: 138 61 18;        /* #8a3d12 deep rust: links, labels */
+    --rgb-copper: 201 122 46;       /* #c97a2e copper: highlights */
+
+    --color-cream: rgb(var(--rgb-cream));
+    --color-cream-dark: rgb(var(--rgb-cream-dark));
+    --color-ink: rgb(var(--rgb-ink));
+    --color-ink-soft: rgb(var(--rgb-ink-soft));
+    --color-ink-muted: rgb(var(--rgb-ink-muted));
+    --color-line: rgb(var(--rgb-line));
+    --color-accent: rgb(var(--rgb-accent));
+    --color-copper: rgb(var(--rgb-copper));
+
+    /* Fonts: pick any two from fonts.google.com, add them to the
+       @import line at the top of this file, then change these. */
+    --font-heading: 'Cormorant Garamond', serif;
+    --font-body: 'Inter', sans-serif;
+  }
+
+  * {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: var(--color-cream);
+    color: var(--color-ink);
+    font-family: var(--font-body);
+    font-weight: 300;
+    line-height: 1.6;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
+    font-weight: 400;
+    letter-spacing: -0.01em;
+  }
+}
+
+@layer utilities {
+  .font-serif-display {
+    font-family: var(--font-heading);
+  }
+  .font-body {
+    font-family: var(--font-body);
+  }
+  .fade-in {
+    animation: fadeIn 0.8s ease-out forwards;
+  }
+  .fade-in-up {
+    animation: fadeInUp 0.7s ease-out forwards;
+  }
+  .fade-in-delay-1 {
+    animation: fadeInUp 0.7s ease-out 0.15s forwards;
+    opacity: 0;
+  }
+  .fade-in-delay-2 {
+    animation: fadeInUp 0.7s ease-out 0.3s forwards;
+    opacity: 0;
+  }
+  .fade-in-delay-3 {
+    animation: fadeInUp 0.7s ease-out 0.45s forwards;
+    opacity: 0;
+  }
+  .fade-in-delay-4 {
+    animation: fadeInUp 0.7s ease-out 0.6s forwards;
+    opacity: 0;
+  }
+
+  .image-zoom {
+    overflow: hidden;
+  }
+  .image-zoom img {
+    transition: transform 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+  .image-zoom:hover img {
+    transform: scale(1.05);
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 0.9s ease-out, transform 0.9s ease-out;
+  }
+  .reveal.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .link-underline {
+    position: relative;
+    display: inline-block;
+  }
+  .link-underline::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -2px;
+    width: 0;
+    height: 1px;
+    background-color: currentColor;
+    transition: width 0.4s ease;
+  }
+  .link-underline:hover::after {
+    width: 100%;
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-cream);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-line);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-ink-muted);
+}
+
+::selection {
+  background-color: var(--color-copper);
+  color: var(--color-cream);
+}
