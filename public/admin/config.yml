@@ -1,0 +1,177 @@
+# Use DecapBridge classic auth (required)
+backend:
+  name: git-gateway
+  repo: bayasakh-ai/hueartgallery
+  branch: main
+  identity_url: https://auth.decapbridge.com/sites/cc757d21-403f-4302-9d7b-3c7638a2de0a
+  gateway_url: https://gateway.decapbridge.com
+
+  # See who did what (optional)
+  commit_messages:
+    create: Create {{collection}} “{{slug}}” - {{author-name}} <{{author-login}}> via DecapBridge
+    update: Update {{collection}} “{{slug}}” - {{author-name}} <{{author-login}}> via DecapBridge
+    delete: Delete {{collection}} “{{slug}}” - {{author-name}} <{{author-login}}> via DecapBridge
+    uploadMedia: Upload “{{path}}” - {{author-name}} <{{author-login}}> via DecapBridge
+    deleteMedia: Delete “{{path}}” - {{author-name}} <{{author-login}}> via DecapBridge
+    openAuthoring: Message {{message}} - {{author-name}} <{{author-login}}> via DecapBridge
+
+# Better Decap + Bridge logo (optional)
+logo_url: https://decapbridge.com/decapcms-with-bridge.svg
+
+# Add site links in Decap CMS (optional)
+site_url: https://hueartgallery.netlify.app
+
+# The site is built with Vite, so files the CMS manages live in public/.
+# media_folder = where uploaded images are saved in the repo,
+# public_folder = the web address they are served from.
+media_folder: "public/images"
+public_folder: "/images"
+
+collections:
+  # ---------------------------------------------------------------- Paintings
+  - name: "paintings"
+    label: "Paintings"
+    files:
+      - name: "paintings"
+        label: "All Paintings"
+        file: "public/data/paintings.json"
+        fields:
+          - name: "paintings"
+            label: "Paintings"
+            label_singular: "Painting"
+            widget: "list"
+            summary: "{{title}} - {{painter}} ({{status}})"
+            fields:
+              - {label: "Title", name: "title", widget: "string", hint: "Each painting needs its own title."}
+              - label: "Painter"
+                name: "painter"
+                widget: "relation"
+                collection: "painters"
+                file: "painters"
+                search_fields: ["painters.*.name"]
+                value_field: "painters.*.name"
+                display_fields: ["painters.*.name"]
+                hint: "Add the painter under Painters first, then pick them here."
+              - {label: "Image", name: "image", widget: "image"}
+              - {label: "Year", name: "year", widget: "number", value_type: "int", min: 1800, max: 2100, required: false}
+              - {label: "Medium", name: "medium", widget: "string", required: false, hint: "e.g. Oil on canvas"}
+              - {label: "Width (cm)", name: "width_cm", widget: "number", value_type: "int", min: 1, required: false}
+              - {label: "Height (cm)", name: "height_cm", widget: "number", value_type: "int", min: 1, required: false}
+              - {label: "Price (₮)", name: "price", widget: "number", value_type: "int", min: 0, default: 0, required: false, hint: "Numbers only, e.g. 2500000. Use 0 to show \"Price on request\"."}
+              - label: "Status"
+                name: "status"
+                widget: "select"
+                options: ["available", "reserved", "sold"]
+                default: "available"
+              - {label: "Description", name: "description", widget: "text", required: false}
+              - {label: "Frame", name: "frame", widget: "string", required: false, hint: "e.g. Unframed, Black floating frame"}
+              - {label: "Signature", name: "signature", widget: "string", required: false, default: "Signed by artist"}
+              - {label: "Authenticity", name: "authenticity", widget: "string", required: false, default: "Certificate of Authenticity included"}
+
+  # ----------------------------------------------------------------- Painters
+  - name: "painters"
+    label: "Painters"
+    files:
+      - name: "painters"
+        label: "All Painters"
+        file: "public/data/painters.json"
+        fields:
+          - name: "painters"
+            label: "Painters"
+            label_singular: "Painter"
+            widget: "list"
+            summary: "{{name}}"
+            fields:
+              - {label: "Name", name: "name", widget: "string", hint: "If you rename a painter, re-select them on their paintings and exhibitions."}
+              - {label: "Portrait", name: "portrait", widget: "image", required: false, hint: "Optional. If empty, one of their paintings is shown instead."}
+              - {label: "Style", name: "style", widget: "string", required: false, hint: "Short, e.g. Abstract expressionism"}
+              - {label: "Biography", name: "bio", widget: "text", required: false}
+              - {label: "Artist statement", name: "statement", widget: "text", required: false}
+              - {label: "Education", name: "education", widget: "text", required: false}
+              - label: "Awards"
+                name: "awards"
+                widget: "list"
+                required: false
+                field: {label: "Award", name: "award", widget: "string"}
+
+  # ------------------------------------------------------ Exhibitions & events
+  - name: "events"
+    label: "Exhibitions & Events"
+    files:
+      - name: "events"
+        label: "All Exhibitions"
+        file: "public/data/events.json"
+        fields:
+          - name: "events"
+            label: "Exhibitions"
+            label_singular: "Exhibition"
+            widget: "list"
+            summary: "{{title}} ({{start_date}})"
+            fields:
+              - {label: "Title", name: "title", widget: "string"}
+              - {label: "Start date", name: "start_date", widget: "datetime", date_format: "YYYY-MM-DD", time_format: false, format: "YYYY-MM-DD", picker_utc: true}
+              - {label: "End date", name: "end_date", widget: "datetime", date_format: "YYYY-MM-DD", time_format: false, format: "YYYY-MM-DD", picker_utc: true, hint: "The site marks it Upcoming / On now / Ended automatically from these dates."}
+              - {label: "Location", name: "location", widget: "string", required: false}
+              - {label: "Description", name: "description", widget: "text", required: false}
+              - {label: "Cover image", name: "cover", widget: "image", required: false}
+              - label: "Exhibition photos"
+                name: "gallery_images"
+                widget: "list"
+                required: false
+                field: {label: "Photo", name: "photo", widget: "image"}
+              - {label: "Video", name: "video", widget: "file", required: false, hint: "Optional. An .mp4 file (keep it small) or a direct link to one."}
+              - label: "Painters"
+                name: "painters"
+                widget: "relation"
+                collection: "painters"
+                file: "painters"
+                search_fields: ["painters.*.name"]
+                value_field: "painters.*.name"
+                display_fields: ["painters.*.name"]
+                multiple: true
+                required: false
+              - label: "Paintings on show"
+                name: "paintings"
+                widget: "relation"
+                collection: "paintings"
+                file: "paintings"
+                search_fields: ["paintings.*.title"]
+                value_field: "paintings.*.title"
+                display_fields: ["paintings.*.title"]
+                multiple: true
+                required: false
+
+  # ------------------------------------------------------------ Site settings
+  - name: "site"
+    label: "Site Settings"
+    files:
+      - name: "site"
+        label: "Gallery Info & Text"
+        file: "public/data/site.json"
+        fields:
+          - {label: "Gallery name", name: "name", widget: "string"}
+          - {label: "Tagline", name: "tagline", widget: "string", required: false}
+          - {label: "Footer line", name: "footer_text", widget: "string", required: false}
+          - {label: "Home page heading", name: "home_title", widget: "string", required: false}
+          - {label: "Home page text", name: "home_text", widget: "text", required: false, hint: "Leave a blank line between paragraphs."}
+          - {label: "Home page picture", name: "home_image", widget: "image", required: false}
+          - {label: "About page intro", name: "about_description", widget: "text", required: false}
+          - {label: "About page heading", name: "about_title", widget: "string", required: false}
+          - {label: "About page story", name: "about_text", widget: "text", required: false, hint: "Leave a blank line between paragraphs. The section is hidden if empty."}
+          - {label: "About page picture", name: "about_image", widget: "image", required: false}
+          - label: "About page blocks (mission, vision, ...)"
+            name: "values"
+            widget: "list"
+            required: false
+            summary: "{{title}}"
+            fields:
+              - {label: "Small label", name: "label", widget: "string", required: false, hint: "e.g. Mission"}
+              - {label: "Heading", name: "title", widget: "string"}
+              - {label: "Text", name: "text", widget: "text", required: false}
+          - {label: "Address", name: "address", widget: "text", required: false, hint: "One line per row."}
+          - {label: "Email", name: "email", widget: "string", required: false}
+          - {label: "Phone", name: "phone", widget: "string", required: false}
+          - {label: "Opening hours", name: "hours", widget: "text", required: false, hint: "One line per row, e.g. Tue - Sat, 10:00 - 18:00"}
+          - {label: "Opening hours note", name: "hours_note", widget: "string", required: false, hint: "e.g. Sunday and Monday by appointment"}
+          - {label: "Instagram link", name: "instagram", widget: "string", required: false}
+          - {label: "Facebook link", name: "facebook", widget: "string", required: false}
