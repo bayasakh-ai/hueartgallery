@@ -1,10 +1,11 @@
 import { ArrowRight } from 'lucide-react';
 import { useGallery } from '@/hooks/useGallery';
-import { featuredEvent, formatDateRange, paragraphs } from '@/lib/data';
+import { featuredEvent, formatDateRange, paragraphs, timingLabel } from '@/lib/data';
 import type { GalleryEvent } from '@/types';
 import { useReveal } from '@/hooks/useReveal';
 import { SectionTitle, Button } from '@/components/UI';
 import { PainterCard, PaintingCard } from '@/components/Cards';
+import HeroSlider from '@/components/HeroSlider';
 import LoadingScreen from '@/components/LoadingScreen';
 import ErrorState from '@/components/ErrorState';
 
@@ -27,40 +28,54 @@ export default function HomePage({ onNavigate }: HomePageProps) {
   const featuredPaintings = available.slice(0, 6);
   const introParagraphs = paragraphs(site.home_text);
 
+  // Hero: the current/next exhibition's photos when there is one (cover +
+  // any exhibition photos added in the CMS, in order, de-duplicated), else
+  // a single available painting, else the site's default home picture.
+  const eventImages = currentEvent
+    ? Array.from(new Set([currentEvent.cover_url, ...currentEvent.gallery_images].filter(Boolean)))
+    : [];
+  const heroImages = eventImages.length > 0
+    ? eventImages
+    : [heroPainting?.image_url ?? site.home_image];
+  const heroEyebrow = currentEvent
+    ? `${timingLabel[currentEvent.timing]} Exhibition${currentEvent.location ? ` · ${currentEvent.location}` : ''}`
+    : [heroPainter?.name, heroPainting?.year].filter(Boolean).join(' · ') || site.tagline;
+  const heroTitle = currentEvent?.title ?? heroPainting?.title ?? site.name;
+  const heroText = currentEvent?.description || heroPainting?.description || '';
+
   return (
     <div>
       {/* Hero */}
       <section className="relative h-screen w-full overflow-hidden">
-        <div className="absolute inset-0">
-          <img
-            src={heroPainting?.image_url ?? site.home_image}
-            alt={heroPainting?.title ?? site.name}
-            className="w-full h-full object-cover"
-          />
-          <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black/40" />
-        </div>
+        <HeroSlider images={heroImages} alt={heroTitle} />
         <div className="relative h-full flex flex-col justify-end pb-20 px-6 md:px-10 lg:px-16 max-w-[1400px] mx-auto">
           <div className="max-w-2xl">
             <p className="text-xs tracking-[0.25em] uppercase text-cream/80 mb-6 font-body fade-in-delay-1">
-              {[heroPainter?.name, heroPainting?.year].filter(Boolean).join(' · ') || site.tagline}
+              {heroEyebrow}
             </p>
             <h1 className="font-serif-display text-5xl md:text-6xl lg:text-7xl text-cream leading-tight mb-6 fade-in-delay-2">
-              {heroPainting?.title ?? site.name}
+              {heroTitle}
             </h1>
-            {heroPainting?.description && (
+            {heroText && (
               <p className="text-cream/70 text-lg leading-relaxed max-w-xl mb-8 fade-in-delay-3 line-clamp-3">
-                {heroPainting.description}
+                {heroText}
               </p>
             )}
             <div className="flex flex-wrap gap-4 fade-in-delay-4">
-              <Button variant="solid" onClick={() => onNavigate('paintings')}>
-                View Collection
-              </Button>
+              {currentEvent ? (
+                <Button variant="solid" onClick={() => onNavigate('event-detail', currentEvent.slug)}>
+                  Event Details
+                </Button>
+              ) : (
+                <Button variant="solid" onClick={() => onNavigate('paintings')}>
+                  View Collection
+                </Button>
+              )}
               <button
-                onClick={() => onNavigate('painters')}
+                onClick={() => onNavigate(currentEvent ? 'paintings' : 'painters')}
                 className="px-8 py-3.5 text-xs tracking-[0.2em] uppercase font-body text-cream border border-cream/40 hover:bg-cream hover:text-ink transition-all duration-300"
               >
-                Explore Artists
+                {currentEvent ? 'View Collection' : 'Explore Artists'}
               </button>
             </div>
           </div>
