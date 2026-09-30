@@ -1,13 +1,21 @@
 {
   "events": [
     {
-      "title": "Үзэсгэлэнгийн нэр",
+      "gallery_images": [
+        "/images/ev1.jpg",
+        "/images/ev3.jpg",
+        "/images/ev4.jpg",
+        "/images/ev5.jpg",
+        "/images/ev6.jpg"
+      ],
+      "painters": [],
       "start_date": "2026-03-01",
+      "paintings": [],
       "end_date": "2026-04-01",
       "location": "",
-      "description": "Үзэсгэлэнгийн тайлбар",
-      "painters": [],
-      "paintings": []
+      "cover": "/images/new_header.jpg",
+      "title": "Үзэсгэлэнгийн нэр",
+      "description": "Үзэсгэлэнгийн тайлбар"
     },
     {
       "title": "Үзэсгэлэнгийн нэр 2",
