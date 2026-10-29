@@ -119,6 +119,19 @@
       "image": "/images/322190158_1616915602062777_7602354599560986530_n.jpg",
       "description": "TETST",
       "year": 2026
+    },
+    {
+      "height_cm": 543,
+      "width_cm": 123,
+      "price": 0,
+      "painter": "Gan-Erdene",
+      "authenticity": "Certificate of Authenticity included",
+      "status": "available",
+      "medium": "Tos",
+      "signature": "Signed by artist",
+      "title": "Bayaskh",
+      "image": "/images/img_1347.jpg",
+      "year": 2026
     }
   ]
 }
