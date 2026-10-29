@@ -62,21 +62,6 @@
     },
     {
       "height_cm": 61,
-      "width_cm": 61,
-      "price": 1800000,
-      "painter": "Artist Name",
-      "frame": "Unframed",
-      "authenticity": "Certificate of Authenticity included",
-      "status": "available",
-      "medium": "Acrylic on Canvas",
-      "signature": "Signed by artist",
-      "title": "Abstract Emotions",
-      "image": "/images/4.jpeg",
-      "description": "бүтээлийн тайлбар",
-      "year": 2024
-    },
-    {
-      "height_cm": 61,
       "width_cm": 46,
       "price": 1200000,
       "painter": "Artist Name",
@@ -119,6 +104,21 @@
       "image": "/images/322190158_1616915602062777_7602354599560986530_n.jpg",
       "description": "TETST",
       "year": 2026
+    },
+    {
+      "height_cm": 61,
+      "width_cm": 61,
+      "price": 1800000,
+      "painter": "Artist Name",
+      "frame": "Unframed",
+      "authenticity": "Certificate of Authenticity included",
+      "status": "available",
+      "medium": "Acrylic on Canvas",
+      "signature": "Signed by artist",
+      "title": "Abstract Emotions",
+      "image": "/images/4.jpeg",
+      "description": "бүтээлийн тайлбар",
+      "year": 2024
     },
     {
       "height_cm": 543,
