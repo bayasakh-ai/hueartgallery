@@ -1,23 +1,61 @@
 import { useEffect, useState } from 'react';
-import { Menu, X } from 'lucide-react';
+import { Globe, Menu, X } from 'lucide-react';
 import type { Page } from '@/types';
+import { useLanguage, type Lang, type StringKey } from '@/lib/i18n';
 
 interface NavbarProps {
   currentPage: Page;
   onNavigate: (page: Page) => void;
 }
 
-const navItems: { label: string; page: Page }[] = [
-  { label: 'Home', page: 'home' },
-  { label: 'Events', page: 'events' },
-  { label: 'Painters', page: 'painters' },
-  { label: 'Paintings', page: 'paintings' },
-  { label: 'About Us', page: 'about' },
+const navItems: { label: StringKey; page: Page }[] = [
+  { label: 'home', page: 'home' },
+  { label: 'events', page: 'events' },
+  { label: 'painters', page: 'painters' },
+  { label: 'paintings', page: 'paintings' },
+  { label: 'about', page: 'about' },
 ];
+
+const languages: { code: Lang; label: string }[] = [
+  { code: 'mn', label: 'MN' },
+  { code: 'en', label: 'ENG' },
+];
+
+function LanguageSwitch({ light }: { light: boolean }) {
+  const { lang, setLang, t } = useLanguage();
+  return (
+    <div
+      role="group"
+      aria-label={t('language')}
+      className={`flex items-center gap-2 text-xs tracking-[0.15em] font-body transition-colors duration-500 ${
+        light ? 'text-cream/80' : 'text-ink-soft'
+      }`}
+    >
+      <Globe size={16} aria-hidden="true" />
+      {languages.map((l, i) => (
+        <span key={l.code} className="flex items-center gap-2">
+          {i > 0 && <span className="opacity-40">|</span>}
+          <button
+            onClick={() => setLang(l.code)}
+            aria-pressed={lang === l.code}
+            className={`transition-colors duration-300 ${
+              lang === l.code
+                ? light ? 'text-cream font-medium' : 'text-ink font-medium'
+                : light ? 'hover:text-cream' : 'hover:text-ink'
+            }`}
+          >
+            {l.label}
+          </button>
+        </span>
+      ))}
+    </div>
+  );
+}
 
 export default function Navbar({ currentPage, onNavigate }: NavbarProps) {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const { t } = useLanguage();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
@@ -82,21 +120,25 @@ export default function Navbar({ currentPage, onNavigate }: NavbarProps) {
                           : 'text-ink-soft hover:text-ink'
                     }`}
                   >
-                    {item.label}
+                    {t(item.label)}
                   </button>
                 );
               })}
+              <LanguageSwitch light={isTransparent} />
             </div>
 
-            <button
-              onClick={() => setMenuOpen(!menuOpen)}
-              className={`md:hidden transition-colors duration-500 ${
-                isTransparent ? 'text-cream' : 'text-ink'
-              }`}
-              aria-label="Toggle menu"
-            >
-              {menuOpen ? <X size={24} /> : <Menu size={24} />}
-            </button>
+            <div className="flex items-center gap-5 md:hidden">
+              <LanguageSwitch light={isTransparent} />
+              <button
+                onClick={() => setMenuOpen(!menuOpen)}
+                className={`transition-colors duration-500 ${
+                  isTransparent ? 'text-cream' : 'text-ink'
+                }`}
+                aria-label={t('toggleMenu')}
+              >
+                {menuOpen ? <X size={24} /> : <Menu size={24} />}
+              </button>
+            </div>
           </div>
         </nav>
       </header>
@@ -120,7 +162,7 @@ export default function Navbar({ currentPage, onNavigate }: NavbarProps) {
                 opacity: menuOpen ? undefined : 0,
               }}
             >
-              {item.label}
+              {t(item.label)}
             </button>
           ))}
         </div>

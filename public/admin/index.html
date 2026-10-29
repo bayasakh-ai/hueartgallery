@@ -7,7 +7,16 @@
     <meta name="robots" content="noindex" />
   </head>
   <body>
+    <script>
+      // Show paintings, artists and exhibitions as photo cards by default
+      // (the list/grid buttons still work and are remembered).
+      try {
+        if (!localStorage.getItem('decap-cms.entries.viewStyle')) {
+          localStorage.setItem('decap-cms.entries.viewStyle', 'VIEW_STYLE_GRID');
+        }
+      } catch (e) {}
+    </script>
     <!-- Decap CMS admin UI. Loaded from CDN, no build step needed. -->
-    <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
+    <script src="https://unpkg.com/decap-cms@3.17.3/dist/decap-cms.js"></script>
   </body>
 </html>

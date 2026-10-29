@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { useLanguage } from '@/lib/i18n';
 
 interface ImageSliderProps {
   images: string[];
@@ -8,6 +9,7 @@ interface ImageSliderProps {
 
 export default function ImageSlider({ images, captions }: ImageSliderProps) {
   const [current, setCurrent] = useState(0);
+  const { t } = useLanguage();
 
   const next = useCallback(() => {
     setCurrent((p) => (p + 1) % images.length);
@@ -33,7 +35,7 @@ export default function ImageSlider({ images, captions }: ImageSliderProps) {
             className="absolute inset-0 transition-opacity duration-1000 ease-in-out"
             style={{ opacity: i === current ? 1 : 0 }}
           >
-            <img src={img} alt={`Slide ${i + 1}`} className="w-full h-full object-cover" loading="lazy" />
+            <img src={img} alt={t('slide', { n: i + 1 })} className="w-full h-full object-cover" loading="lazy" />
           </div>
         ))}
       </div>
@@ -43,14 +45,14 @@ export default function ImageSlider({ images, captions }: ImageSliderProps) {
           <button
             onClick={prev}
             className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 flex items-center justify-center bg-cream/80 hover:bg-cream text-ink transition-all duration-300"
-            aria-label="Previous"
+            aria-label={t('previous')}
           >
             <ChevronLeft size={20} />
           </button>
           <button
             onClick={next}
             className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 flex items-center justify-center bg-cream/80 hover:bg-cream text-ink transition-all duration-300"
-            aria-label="Next"
+            aria-label={t('next')}
           >
             <ChevronRight size={20} />
           </button>
@@ -63,7 +65,7 @@ export default function ImageSlider({ images, captions }: ImageSliderProps) {
                 className={`h-1 transition-all duration-300 ${
                   i === current ? 'w-8 bg-ink' : 'w-4 bg-line'
                 }`}
-                aria-label={`Go to slide ${i + 1}`}
+                aria-label={t('goToSlide', { n: i + 1 })}
               />
             ))}
           </div>

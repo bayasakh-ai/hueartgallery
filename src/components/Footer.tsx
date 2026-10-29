@@ -1,6 +1,7 @@
 import { Instagram, Facebook, Mail, MapPin, Phone, Clock } from 'lucide-react';
 import { useGallery } from '@/hooks/useGallery';
 import type { Page } from '@/types';
+import { useLanguage } from '@/lib/i18n';
 
 interface FooterProps {
   onNavigate: (page: Page) => void;
@@ -8,6 +9,7 @@ interface FooterProps {
 
 export default function Footer({ onNavigate }: FooterProps) {
   const { gallery } = useGallery();
+  const { t } = useLanguage();
   const site = gallery?.site;
   const address = (site?.address ?? '').split('\n').map((l) => l.trim()).filter(Boolean).join(', ');
   const hours = (site?.hours ?? '').split('\n').map((l) => l.trim()).filter(Boolean).join(' · ');
@@ -27,32 +29,32 @@ export default function Footer({ onNavigate }: FooterProps) {
 
           <div>
             <h4 className="text-xs tracking-[0.2em] uppercase text-cream/40 mb-4 font-body">
-              Navigate
+              {t('navigate')}
             </h4>
             <ul className="space-y-3 text-sm">
               <li>
                 <button onClick={() => onNavigate('home')} className="hover:text-cream transition-colors">
-                  Home
+                  {t('home')}
                 </button>
               </li>
               <li>
                 <button onClick={() => onNavigate('events')} className="hover:text-cream transition-colors">
-                  Events
+                  {t('events')}
                 </button>
               </li>
               <li>
                 <button onClick={() => onNavigate('painters')} className="hover:text-cream transition-colors">
-                  Painters
+                  {t('painters')}
                 </button>
               </li>
               <li>
                 <button onClick={() => onNavigate('paintings')} className="hover:text-cream transition-colors">
-                  Paintings
+                  {t('paintings')}
                 </button>
               </li>
               <li>
                 <button onClick={() => onNavigate('about')} className="hover:text-cream transition-colors">
-                  About Us
+                  {t('about')}
                 </button>
               </li>
             </ul>
@@ -60,7 +62,7 @@ export default function Footer({ onNavigate }: FooterProps) {
 
           <div>
             <h4 className="text-xs tracking-[0.2em] uppercase text-cream/40 mb-4 font-body">
-              Visit
+              {t('visit')}
             </h4>
             <ul className="space-y-3 text-sm text-cream/60">
               {address && (
@@ -108,7 +110,7 @@ export default function Footer({ onNavigate }: FooterProps) {
         </div>
 
         <div className="border-t border-cream/10 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-cream/40">
-          <p>© {new Date().getFullYear()} {site?.name ?? 'Hue Art Gallery'}. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} {site?.name ?? 'Hue Art Gallery'}. {t('allRights')}</p>
           <p>{site?.footer_text}</p>
         </div>
       </div>

@@ -1,5 +1,6 @@
 import { useGallery } from '@/hooks/useGallery';
 import { formatDateRange, sortEvents } from '@/lib/data';
+import { useLanguage } from '@/lib/i18n';
 import { EventCard } from '@/components/Cards';
 import { PageHeader } from '@/components/UI';
 import LoadingScreen from '@/components/LoadingScreen';
@@ -11,6 +12,7 @@ interface EventsPageProps {
 
 export default function EventsPage({ onNavigate }: EventsPageProps) {
   const { gallery, loading, error } = useGallery();
+  const { t, lang } = useLanguage();
 
   if (loading) return <LoadingScreen />;
   if (error || !gallery) return <ErrorState />;
@@ -20,9 +22,9 @@ export default function EventsPage({ onNavigate }: EventsPageProps) {
   return (
     <div>
       <PageHeader
-        eyebrow="Exhibitions"
-        title="Events"
-        description={`Current, upcoming and past exhibitions at ${gallery.site.name}.`}
+        eyebrow={t('exhibitionsEyebrow')}
+        title={t('events')}
+        description={t('exhibitionsIntro', { name: gallery.site.name })}
       />
       <div className="px-6 md:px-10 lg:px-16 max-w-[1400px] mx-auto pb-24">
         <div className="grid grid-cols-1 gap-16 md:gap-24">
@@ -30,7 +32,7 @@ export default function EventsPage({ onNavigate }: EventsPageProps) {
             <EventCard
               key={event.id}
               title={event.title}
-              date={formatDateRange(event.start_date, event.end_date, 'short')}
+              date={formatDateRange(event.start_date, event.end_date, 'short', lang)}
               location={event.location}
               description={event.description}
               coverUrl={event.cover_url}

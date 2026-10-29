@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useLanguage } from '@/lib/i18n';
 
 interface HeroSliderProps {
   images: string[];
@@ -12,6 +13,7 @@ interface HeroSliderProps {
  */
 export default function HeroSlider({ images, alt }: HeroSliderProps) {
   const [current, setCurrent] = useState(0);
+  const { t } = useLanguage();
 
   useEffect(() => {
     setCurrent(0);
@@ -39,7 +41,7 @@ export default function HeroSlider({ images, alt }: HeroSliderProps) {
             <button
               key={i}
               onClick={() => setCurrent(i)}
-              aria-label={`Go to slide ${i + 1}`}
+              aria-label={t('goToSlide', { n: i + 1 })}
               className={`h-1 transition-all duration-300 ${
                 i === current ? 'w-8 bg-cream' : 'w-4 bg-cream/40'
               }`}

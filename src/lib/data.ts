@@ -7,9 +7,10 @@ import type {
   PaintingStatus,
   SiteSettings,
 } from '@/types';
+import type { Lang, StringKey } from '@/lib/i18n';
 
 /*
-  Reads the JSON files that the CMS (admin/) edits:
+  Reads the JSON files built from the CMS content (see vite.config.ts):
     /data/site.json, /data/painters.json, /data/paintings.json, /data/events.json
   and turns them into linked objects (a painting knows its painter, an
   event knows its painters and paintings). Nothing here talks to a server
@@ -68,21 +69,32 @@ export function formatPrice(price: number): string {
   return `${price.toLocaleString('en-US')} ₮`;
 }
 
-/** Text for a painting's price ("2,500,000 ₮", "Price on request", or ""). */
-export function priceLabel(p: Pick<Painting, 'price' | 'status'>): string {
+/** Text for a painting's price ("2,500,000 ₮", the "price on request" text, or ""). */
+export function priceLabel(p: Pick<Painting, 'price' | 'status'>, onRequest: string): string {
   if (p.status !== 'available') return '';
-  return p.price > 0 ? formatPrice(p.price) : 'Price on request';
+  return p.price > 0 ? formatPrice(p.price) : onRequest;
 }
 
-export function formatDate(iso: string, opts: Intl.DateTimeFormatOptions): string {
+export function formatDate(iso: string, opts: Intl.DateTimeFormatOptions, lang: Lang = 'en'): string {
   const d = new Date(`${iso}T00:00:00`);
-  return Number.isNaN(d.getTime()) ? '' : d.toLocaleDateString('en-GB', opts);
+  if (Number.isNaN(d.getTime())) return '';
+  if (lang === 'mn') {
+    // Browsers have no Mongolian month names, so write the date out by hand:
+    // long "2026 оны 9-р сарын 29", short "2026.09.29".
+    const y = d.getFullYear();
+    const m = d.getMonth() + 1;
+    const day = d.getDate();
+    return opts.month === 'long'
+      ? `${y} оны ${m}-р сарын ${day}`
+      : `${y}.${String(m).padStart(2, '0')}.${String(day).padStart(2, '0')}`;
+  }
+  return d.toLocaleDateString('en-GB', opts);
 }
 
-export function formatDateRange(start: string, end: string, month: 'short' | 'long' = 'long'): string {
+export function formatDateRange(start: string, end: string, month: 'short' | 'long' = 'long', lang: Lang = 'en'): string {
   const o: Intl.DateTimeFormatOptions = { day: 'numeric', month, year: 'numeric' };
-  const a = formatDate(start, o);
-  const b = formatDate(end, o);
+  const a = formatDate(start, o, lang);
+  const b = formatDate(end, o, lang);
   if (a && b && a !== b) return `${a} – ${b}`;
   return a || b;
 }
@@ -94,10 +106,11 @@ function timingOf(start: string, end: string): EventTiming {
   return 'current';
 }
 
-export const timingLabel: Record<EventTiming, string> = {
-  upcoming: 'Upcoming',
-  current: 'On now',
-  past: 'Ended',
+/** i18n key for each timing: t(timingKey[event.timing]). */
+export const timingKey: Record<EventTiming, StringKey> = {
+  upcoming: 'timingUpcoming',
+  current: 'timingCurrent',
+  past: 'timingPast',
 };
 
 /** Splits CMS text into paragraphs (blank line = new paragraph). */
@@ -106,6 +119,47 @@ export function paragraphs(s: string): string[] {
 }
 
 // ---------- loading ----------
+
+/*
+  Every CMS file holds both languages: { "en": {...}, "mn": {...} }.
+  Fields that are the same in both (images, prices, dates) are saved under
+  the default language only. inLang() gives one flat object for a language,
+  using the other language's value wherever this one is empty.
+*/
+type Raw = Record<string, unknown>;
+interface RawItem {
+  id?: string;
+  en?: Raw;
+  mn?: Raw;
+}
+
+function isEmpty(v: unknown): boolean {
+  return v == null || (typeof v === 'string' && !v.trim()) || (Array.isArray(v) && v.length === 0);
+}
+
+function isObject(v: unknown): v is Raw {
+  return typeof v === 'object' && v !== null && !Array.isArray(v);
+}
+
+function merge(own: Raw, other: Raw): Raw {
+  const out: Raw = {};
+  new Set([...Object.keys(other), ...Object.keys(own)]).forEach((k) => {
+    out[k] =
+      isObject(own[k]) && isObject(other[k])
+        ? merge(own[k] as Raw, other[k] as Raw)
+        : isEmpty(own[k])
+          ? other[k]
+          : own[k];
+  });
+  return out;
+}
+
+function inLang(item: RawItem | null | undefined, lang: Lang): Raw {
+  const out = merge(item?.[lang] ?? {}, item?.[lang === 'en' ? 'mn' : 'en'] ?? {});
+  // The CMS keeps optional fields in folded groups ("Size & year", "More details").
+  const { size, details, ...rest } = out;
+  return { ...(isObject(size) ? size : {}), ...(isObject(details) ? details : {}), ...rest };
+}
 
 async function getJson<T>(name: string): Promise<T> {
   const res = await fetch(`/data/${name}.json`, { cache: 'no-cache' });
@@ -134,8 +188,7 @@ const DEFAULT_SITE: SiteSettings = {
   facebook: '',
 };
 
-function buildSite(raw: Record<string, unknown> | null): SiteSettings {
-  const r = raw ?? {};
+function buildSite(r: Raw): SiteSettings {
   const s = { ...DEFAULT_SITE };
   (Object.keys(DEFAULT_SITE) as (keyof SiteSettings)[]).forEach((k) => {
     if (k === 'values') return;
@@ -145,52 +198,65 @@ function buildSite(raw: Record<string, unknown> | null): SiteSettings {
   s.home_image = asset(s.home_image, FALLBACK_IMAGE);
   s.about_image = asset(s.about_image, FALLBACK_IMAGE);
   s.values = Array.isArray(r.values)
-    ? (r.values as Record<string, unknown>[])
+    ? (r.values as Raw[])
         .map((v) => ({ label: text(v.label), title: text(v.title), text: text(v.text) }))
         .filter((v) => v.title || v.text)
     : [];
   return s;
 }
 
-async function build(): Promise<Gallery> {
-  const [siteRaw, paintersRaw, paintingsRaw, eventsRaw] = await Promise.all([
-    getJson<Record<string, unknown>>('site').catch(() => null),
-    getJson<{ painters?: Record<string, unknown>[] }>('painters'),
-    getJson<{ paintings?: Record<string, unknown>[] }>('paintings'),
-    getJson<{ events?: Record<string, unknown>[] }>('events'),
-  ]);
+interface RawGallery {
+  site: RawItem | null;
+  painters: RawItem[];
+  paintings: RawItem[];
+  events: RawItem[];
+}
 
-  // Painters
-  const painterSlug = uniqueSlugger();
-  const painters: Painter[] = (paintersRaw.painters ?? [])
-    .filter((p) => text(p.name))
-    .map((p) => {
-      const slug = painterSlug(text(p.name));
-      return {
+/** An item's address on the site: its CMS file name, or one made from its title. */
+function slugger() {
+  const next = uniqueSlugger();
+  return (item: RawItem, title: string) => next(text(item.id) || title);
+}
+
+function build(raw: RawGallery, lang: Lang): Gallery {
+  // Painters. Paintings and exhibitions point at a painter by its CMS file
+  // name (older data: by name), so remember both.
+  const painterSlug = slugger();
+  const painterByKey = new Map<string, Painter>();
+  const painters: Painter[] = raw.painters
+    .map((item) => ({ item, p: inLang(item, lang) }))
+    .filter(({ p }) => text(p.name))
+    .map(({ item, p }) => {
+      const slug = painterSlug(item, text(p.name));
+      const painter: Painter = {
         id: slug,
         slug,
         name: text(p.name),
-        portrait_url: asset(text(p.portrait)), // filled from their paintings below if empty
+        portrait_url: asset(text(p.photo) || text(p.portrait)), // filled from their paintings below if empty
         bio: text(p.bio),
         statement: text(p.statement),
         style: text(p.style),
         education: text(p.education),
         awards: list(p.awards),
       };
+      painterByKey.set(text(item.id), painter);
+      painterByKey.set(painter.name, painter);
+      return painter;
     });
-  const painterByName = new Map(painters.map((p) => [p.name, p]));
 
   // Paintings
-  const paintingSlug = uniqueSlugger();
-  const paintings: Painting[] = (paintingsRaw.paintings ?? [])
-    .filter((p) => text(p.title))
-    .map((p) => {
-      const slug = paintingSlug(text(p.title));
-      const painter = painterByName.get(text(p.painter));
+  const paintingSlug = slugger();
+  const paintingByKey = new Map<string, Painting>();
+  const paintings: Painting[] = raw.paintings
+    .map((item) => ({ item, p: inLang(item, lang) }))
+    .filter(({ p }) => text(p.title))
+    .map(({ item, p }) => {
+      const slug = paintingSlug(item, text(p.title));
+      const painter = painterByKey.get(text(p.painter));
       const status = ['available', 'reserved', 'sold'].includes(text(p.status))
         ? (text(p.status) as PaintingStatus)
         : 'available';
-      return {
+      const painting: Painting = {
         id: slug,
         slug,
         painter_id: painter?.id ?? '',
@@ -208,8 +274,10 @@ async function build(): Promise<Gallery> {
         signature: text(p.signature),
         authenticity: text(p.authenticity),
       };
+      paintingByKey.set(text(item.id), painting);
+      paintingByKey.set(painting.title, painting);
+      return painting;
     });
-  const paintingByTitle = new Map(paintings.map((p) => [p.title, p]));
 
   // A painter with no portrait uses one of their paintings instead.
   painters.forEach((pt) => {
@@ -218,12 +286,13 @@ async function build(): Promise<Gallery> {
     }
   });
 
-  // Events
-  const eventSlug = uniqueSlugger();
-  const events: GalleryEvent[] = (eventsRaw.events ?? [])
-    .filter((e) => text(e.title))
-    .map((e) => {
-      const slug = eventSlug(text(e.title));
+  // Exhibitions
+  const eventSlug = slugger();
+  const events: GalleryEvent[] = raw.events
+    .map((item) => ({ item, e: inLang(item, lang) }))
+    .filter(({ e }) => text(e.title))
+    .map(({ item, e }) => {
+      const slug = eventSlug(item, text(e.title));
       const start = text(e.start_date).slice(0, 10);
       const end = text(e.end_date).slice(0, 10) || start;
       const video = text(e.video);
@@ -239,25 +308,49 @@ async function build(): Promise<Gallery> {
         video_url: video ? asset(video) : null,
         gallery_images: list(e.gallery_images).map((g) => asset(g)),
         timing: timingOf(start, end),
-        painters: list(e.painters).map((n) => painterByName.get(n)).filter((x): x is Painter => !!x),
-        paintings: list(e.paintings).map((t) => paintingByTitle.get(t)).filter((x): x is Painting => !!x),
+        painters: list(e.painters).map((n) => painterByKey.get(n)).filter((x): x is Painter => !!x),
+        paintings: list(e.paintings).map((t) => paintingByKey.get(t)).filter((x): x is Painting => !!x),
       };
     });
 
-  return { site: buildSite(siteRaw), painters, paintings, events };
+  return { site: buildSite(inLang(raw.site, lang)), painters, paintings, events };
 }
 
-let cache: Promise<Gallery> | null = null;
+let rawCache: Promise<RawGallery> | null = null;
+const builtCache = new Map<Lang, Promise<Gallery>>();
 
-/** Loads everything once and reuses it for every page. */
-export function loadGallery(): Promise<Gallery> {
-  if (!cache) {
-    cache = build().catch((err) => {
-      cache = null; // allow a retry on the next visit
-      throw err;
-    });
+function loadRaw(): Promise<RawGallery> {
+  if (!rawCache) {
+    rawCache = Promise.all([
+      getJson<RawItem>('site').catch(() => null),
+      getJson<{ painters?: RawItem[] }>('painters'),
+      getJson<{ paintings?: RawItem[] }>('paintings'),
+      getJson<{ events?: RawItem[] }>('events'),
+    ])
+      .then(([site, painters, paintings, events]) => ({
+        site,
+        painters: painters.painters ?? [],
+        paintings: paintings.paintings ?? [],
+        events: events.events ?? [],
+      }))
+      .catch((err) => {
+        rawCache = null; // allow a retry on the next visit
+        builtCache.clear();
+        throw err;
+      });
   }
-  return cache;
+  return rawCache;
+}
+
+/** Loads everything once and reuses it for every page, in the given language. */
+export function loadGallery(lang: Lang): Promise<Gallery> {
+  let g = builtCache.get(lang);
+  if (!g) {
+    g = loadRaw().then((raw) => build(raw, lang));
+    g.catch(() => builtCache.delete(lang));
+    builtCache.set(lang, g);
+  }
+  return g;
 }
 
 /** Upcoming/current first (soonest first), then past events (latest first). */

@@ -1,5 +1,6 @@
 import type { EventTiming, Painter, Painting } from '@/types';
-import { priceLabel, timingLabel } from '@/lib/data';
+import { priceLabel, timingKey } from '@/lib/data';
+import { useLanguage } from '@/lib/i18n';
 import { useReveal } from '@/hooks/useReveal';
 
 interface PainterCardProps {
@@ -10,6 +11,7 @@ interface PainterCardProps {
 
 export function PainterCard({ painter, availableCount, onClick }: PainterCardProps) {
   const { ref, visible } = useReveal<HTMLDivElement>();
+  const { t } = useLanguage();
   return (
     <div
       ref={ref}
@@ -30,7 +32,7 @@ export function PainterCard({ painter, availableCount, onClick }: PainterCardPro
       {painter.style && <p className="text-sm text-ink-muted mb-2">{painter.style}</p>}
       {availableCount !== undefined && (
         <p className="text-xs tracking-[0.1em] uppercase text-ink-soft">
-          {availableCount} {availableCount === 1 ? 'work' : 'works'} available
+          {t(availableCount === 1 ? 'worksAvailableOne' : 'worksAvailableMany', { n: availableCount })}
         </p>
       )}
     </div>
@@ -45,6 +47,7 @@ interface PaintingCardProps {
 
 export function PaintingCard({ painting, painterName, onClick }: PaintingCardProps) {
   const { ref, visible } = useReveal<HTMLDivElement>();
+  const { t } = useLanguage();
   return (
     <div
       ref={ref}
@@ -60,7 +63,7 @@ export function PaintingCard({ painting, painterName, onClick }: PaintingCardPro
         />
         {painting.status !== 'available' && (
           <div className="absolute top-4 right-4 bg-ink/80 text-cream text-xs tracking-[0.15em] uppercase px-3 py-1 font-body">
-            {painting.status === 'reserved' ? 'Reserved' : 'Sold'}
+            {t(painting.status === 'reserved' ? 'reserved' : 'sold')}
           </div>
         )}
       </div>
@@ -70,7 +73,7 @@ export function PaintingCard({ painting, painterName, onClick }: PaintingCardPro
       {painterName && <p className="text-sm text-ink-muted mt-0.5">{painterName}</p>}
       <div className="flex items-baseline justify-between mt-2">
         <p className="text-xs text-ink-soft">{[painting.year, painting.medium].filter(Boolean).join(' · ')}</p>
-        <p className="text-sm text-ink font-body font-medium">{priceLabel(painting)}</p>
+        <p className="text-sm text-ink font-body font-medium">{priceLabel(painting, t('priceOnRequest'))}</p>
       </div>
     </div>
   );
@@ -88,6 +91,7 @@ interface EventCardProps {
 
 export function EventCard({ title, date, location, description, coverUrl, timing, onClick }: EventCardProps) {
   const { ref, visible } = useReveal<HTMLDivElement>();
+  const { t } = useLanguage();
   return (
     <div
       ref={ref}
@@ -110,7 +114,7 @@ export function EventCard({ title, date, location, description, coverUrl, timing
               timing === 'past' ? 'bg-ink/10 text-ink-muted' : 'bg-accent/10 text-accent'
             }`}
           >
-            {timingLabel[timing]}
+            {t(timingKey[timing])}
           </span>
         )}
       </div>

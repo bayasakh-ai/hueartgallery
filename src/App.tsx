@@ -10,6 +10,7 @@ import PaintingsPage from '@/pages/PaintingsPage';
 import PaintingDetailPage from '@/pages/PaintingDetailPage';
 import AboutPage from '@/pages/AboutPage';
 import type { Page } from '@/types';
+import { useLanguage, type StringKey } from '@/lib/i18n';
 
 interface Route {
   page: Page;
@@ -70,6 +71,7 @@ function toUrl(page: Page, slug?: string, inquire?: string): string {
 
 function App() {
   const [route, setRoute] = useState<Route>(parseLocation);
+  const { t } = useLanguage();
 
   const navigate = useCallback((page: Page, slug?: string, inquire?: string) => {
     const url = toUrl(page, slug, inquire);
@@ -90,16 +92,16 @@ function App() {
 
   // Tab title for list pages (detail pages set their own).
   useEffect(() => {
-    const names: Partial<Record<Page, string>> = {
-      events: 'Events',
-      painters: 'Painters',
-      paintings: 'Paintings',
-      about: 'About Us',
+    const names: Partial<Record<Page, StringKey>> = {
+      events: 'events',
+      painters: 'painters',
+      paintings: 'paintings',
+      about: 'about',
     };
     const name = names[route.page];
     if (route.page === 'home') document.title = 'Hue Art Gallery';
-    else if (name) document.title = `${name} - Hue Art Gallery`;
-  }, [route.page]);
+    else if (name) document.title = `${t(name)} - Hue Art Gallery`;
+  }, [route.page, t]);
 
   const renderPage = () => {
     switch (route.page) {

@@ -5,6 +5,7 @@ import { PageHeader } from '@/components/UI';
 import LoadingScreen from '@/components/LoadingScreen';
 import ErrorState from '@/components/ErrorState';
 import { SlidersHorizontal, X } from 'lucide-react';
+import { useLanguage } from '@/lib/i18n';
 
 interface PaintingsPageProps {
   onNavigate: (page: 'painting-detail', slug: string) => void;
@@ -12,6 +13,7 @@ interface PaintingsPageProps {
 
 export default function PaintingsPage({ onNavigate }: PaintingsPageProps) {
   const { gallery, loading, error } = useGallery();
+  const { t } = useLanguage();
   const paintings = useMemo(() => gallery?.paintings ?? [], [gallery]);
   const painters = useMemo(
     () => [...(gallery?.painters ?? [])].sort((a, b) => a.name.localeCompare(b.name)),
@@ -67,9 +69,9 @@ export default function PaintingsPage({ onNavigate }: PaintingsPageProps) {
   return (
     <div>
       <PageHeader
-        eyebrow="Catalogue"
-        title="Paintings"
-        description="Browse our collection of paintings. Contact the gallery to arrange a viewing or to ask about a work."
+        eyebrow={t('catalogue')}
+        title={t('paintings')}
+        description={t('paintingsIntro')}
       />
 
       <div className="px-6 md:px-10 lg:px-16 max-w-[1400px] mx-auto pb-24">
@@ -81,10 +83,10 @@ export default function PaintingsPage({ onNavigate }: PaintingsPageProps) {
               className="inline-flex items-center gap-2 text-sm text-ink hover:text-accent transition-colors"
             >
               <SlidersHorizontal size={16} />
-              Filters
+              {t('filters')}
             </button>
             <span className="text-sm text-ink-muted">
-              {filtered.length} {filtered.length === 1 ? 'work' : 'works'}
+              {t(filtered.length === 1 ? 'worksOne' : 'worksMany', { n: filtered.length })}
             </span>
           </div>
           <select
@@ -92,10 +94,10 @@ export default function PaintingsPage({ onNavigate }: PaintingsPageProps) {
             onChange={(e) => setSortOrder(e.target.value)}
             className="text-sm bg-transparent text-ink-soft border-b border-line py-1 pr-8 focus:outline-none cursor-pointer"
           >
-            <option value="newest">Newest first</option>
-            <option value="oldest">Oldest first</option>
-            <option value="price-low">Price: Low to High</option>
-            <option value="price-high">Price: High to Low</option>
+            <option value="newest">{t('sortNewest')}</option>
+            <option value="oldest">{t('sortOldest')}</option>
+            <option value="price-low">{t('sortPriceLow')}</option>
+            <option value="price-high">{t('sortPriceHigh')}</option>
           </select>
         </div>
 
@@ -104,55 +106,55 @@ export default function PaintingsPage({ onNavigate }: PaintingsPageProps) {
           <div className="mb-10 p-6 bg-cream-dark/50 fade-in">
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
               <div>
-                <label className="text-xs tracking-[0.15em] uppercase text-ink-muted mb-2 block font-body">Painter</label>
+                <label className="text-xs tracking-[0.15em] uppercase text-ink-muted mb-2 block font-body">{t('painters')}</label>
                 <select
                   value={painterFilter}
                   onChange={(e) => setPainterFilter(e.target.value)}
                   className="w-full text-sm bg-cream border border-line px-3 py-2 focus:outline-none focus:border-accent transition-colors"
                 >
-                  <option value="all">All Painters</option>
+                  <option value="all">{t('allArtists')}</option>
                   {painters.map((p) => (
                     <option key={p.id} value={p.id}>{p.name}</option>
                   ))}
                 </select>
               </div>
               <div>
-                <label className="text-xs tracking-[0.15em] uppercase text-ink-muted mb-2 block font-body">Status</label>
+                <label className="text-xs tracking-[0.15em] uppercase text-ink-muted mb-2 block font-body">{t('status')}</label>
                 <select
                   value={statusFilter}
                   onChange={(e) => setStatusFilter(e.target.value)}
                   className="w-full text-sm bg-cream border border-line px-3 py-2 focus:outline-none focus:border-accent transition-colors"
                 >
-                  <option value="all">All</option>
-                  <option value="available">Available</option>
-                  <option value="reserved">Reserved</option>
-                  <option value="sold">Sold</option>
+                  <option value="all">{t('all')}</option>
+                  <option value="available">{t('available')}</option>
+                  <option value="reserved">{t('reserved')}</option>
+                  <option value="sold">{t('sold')}</option>
                 </select>
               </div>
               <div>
-                <label className="text-xs tracking-[0.15em] uppercase text-ink-muted mb-2 block font-body">Medium</label>
+                <label className="text-xs tracking-[0.15em] uppercase text-ink-muted mb-2 block font-body">{t('medium')}</label>
                 <select
                   value={mediumFilter}
                   onChange={(e) => setMediumFilter(e.target.value)}
                   className="w-full text-sm bg-cream border border-line px-3 py-2 focus:outline-none focus:border-accent transition-colors"
                 >
-                  <option value="all">All Mediums</option>
+                  <option value="all">{t('allMediums')}</option>
                   {mediums.map((m) => (
                     <option key={m} value={m}>{m}</option>
                   ))}
                 </select>
               </div>
               <div>
-                <label className="text-xs tracking-[0.15em] uppercase text-ink-muted mb-2 block font-body">Price Range</label>
+                <label className="text-xs tracking-[0.15em] uppercase text-ink-muted mb-2 block font-body">{t('priceRange')}</label>
                 <select
                   value={priceRange}
                   onChange={(e) => setPriceRange(e.target.value)}
                   className="w-full text-sm bg-cream border border-line px-3 py-2 focus:outline-none focus:border-accent transition-colors"
                 >
-                  <option value="all">All Prices</option>
-                  <option value="under-2m">Under 2,000,000 ₮</option>
-                  <option value="2m-3.5m">2,000,000 – 3,500,000 ₮</option>
-                  <option value="3.5m+">3,500,000 ₮ and above</option>
+                  <option value="all">{t('allPrices')}</option>
+                  <option value="under-2m">{t('priceUnder2m')}</option>
+                  <option value="2m-3.5m">{t('price2mTo35m')}</option>
+                  <option value="3.5m+">{t('priceOver35m')}</option>
                 </select>
               </div>
             </div>
@@ -161,7 +163,7 @@ export default function PaintingsPage({ onNavigate }: PaintingsPageProps) {
                 onClick={resetFilters}
                 className="inline-flex items-center gap-1 text-xs text-ink-muted hover:text-ink transition-colors"
               >
-                <X size={14} /> Clear filters
+                <X size={14} /> {t('clearFilters')}
               </button>
             </div>
           </div>
@@ -170,8 +172,8 @@ export default function PaintingsPage({ onNavigate }: PaintingsPageProps) {
         {/* Grid */}
         {filtered.length === 0 ? (
           <div className="py-20 text-center">
-            <p className="text-ink-muted">No paintings match your filters.</p>
-            <button onClick={resetFilters} className="mt-4 text-sm text-accent link-underline">Clear filters</button>
+            <p className="text-ink-muted">{t('noMatch')}</p>
+            <button onClick={resetFilters} className="mt-4 text-sm text-accent link-underline">{t('clearFilters')}</button>
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-12">

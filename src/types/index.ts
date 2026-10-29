@@ -1,5 +1,5 @@
 // Shapes used by the pages. These are built from the JSON files in
-// public/data (edited through the CMS) by src/lib/data.ts.
+// content/ (edited through the CMS) by src/lib/data.ts.
 
 export interface Painter {
   id: string; // same as slug

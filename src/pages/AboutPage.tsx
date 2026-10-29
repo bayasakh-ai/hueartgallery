@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useGallery } from '@/hooks/useGallery';
 import { paragraphs } from '@/lib/data';
+import { useLanguage } from '@/lib/i18n';
 import { PageHeader, SectionTitle, Button } from '@/components/UI';
 import LoadingScreen from '@/components/LoadingScreen';
 import ErrorState from '@/components/ErrorState';
@@ -24,6 +25,7 @@ async function sendToNetlify(fields: Record<string, string>) {
 
 export default function AboutPage({ inquirePainting }: AboutPageProps) {
   const { gallery, loading, error } = useGallery();
+  const { t } = useLanguage();
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [formError, setFormError] = useState('');
@@ -39,14 +41,16 @@ export default function AboutPage({ inquirePainting }: AboutPageProps) {
   // Pre-fill the message when arriving from a painting page.
   const message =
     !touchedMessage && !form.message && asked
-      ? `Hello, I'm interested in "${asked.title}"${asked.painter ? ` by ${asked.painter.name}` : ''}.`
+      ? asked.painter
+        ? t('inquiryMessageBy', { title: asked.title, painter: asked.painter.name })
+        : t('inquiryMessage', { title: asked.title })
       : form.message;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setFormError('');
     if (!form.name.trim() || !form.email.trim() || !message.trim()) {
-      setFormError('Please fill in all fields.');
+      setFormError(t('fillAllFields'));
       return;
     }
     setSubmitting(true);
@@ -62,9 +66,7 @@ export default function AboutPage({ inquirePainting }: AboutPageProps) {
       setForm({ name: '', email: '', message: '' });
       setTouchedMessage(false);
     } catch {
-      setFormError(
-        `Something went wrong. Please try again${site.email ? ` or email us at ${site.email}` : ''}.`
-      );
+      setFormError(site.email ? t('sendFailedEmail', { email: site.email }) : t('sendFailed'));
     } finally {
       setSubmitting(false);
     }
@@ -77,7 +79,7 @@ export default function AboutPage({ inquirePainting }: AboutPageProps) {
 
   return (
     <div>
-      <PageHeader eyebrow="Our Story" title="About Us" description={site.about_description || site.tagline} />
+      <PageHeader eyebrow={t('ourStory')} title={t('about')} description={site.about_description || site.tagline} />
 
       {/* Gallery intro + image */}
       {(story.length > 0 || site.about_title) && (
@@ -124,7 +126,7 @@ export default function AboutPage({ inquirePainting }: AboutPageProps) {
         <div className={`grid gap-12 md:gap-20 ${hasContactInfo ? 'md:grid-cols-2' : 'max-w-2xl'}`}>
           {hasContactInfo ? (
             <div>
-              <SectionTitle eyebrow="Visit" title="Find Us" />
+              <SectionTitle eyebrow={t('visit')} title={t('findUs')} />
               <div className="space-y-6">
                 {addressLines.length > 0 && (
                   <div className="flex gap-4">
@@ -186,41 +188,41 @@ export default function AboutPage({ inquirePainting }: AboutPageProps) {
 
           {/* Contact form */}
           <div>
-            <SectionTitle eyebrow="Get in Touch" title="Contact Us" />
+            <SectionTitle eyebrow={t('getInTouch')} title={t('contactUs')} />
             {submitted ? (
               <div className="p-8 bg-cream-dark/50 text-center fade-in">
-                <p className="font-serif-display text-2xl text-ink mb-2">Thank you</p>
-                <p className="text-ink-soft text-sm">Your message has been received. We'll get back to you soon.</p>
+                <p className="font-serif-display text-2xl text-ink mb-2">{t('thankYou')}</p>
+                <p className="text-ink-soft text-sm">{t('messageReceived')}</p>
                 <button onClick={() => setSubmitted(false)} className="mt-4 text-sm text-accent link-underline">
-                  Send another message
+                  {t('sendAnother')}
                 </button>
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-5">
                 <div>
-                  <label htmlFor="c-name" className="text-xs tracking-[0.15em] uppercase text-ink-muted mb-2 block font-body">Name</label>
+                  <label htmlFor="c-name" className="text-xs tracking-[0.15em] uppercase text-ink-muted mb-2 block font-body">{t('name')}</label>
                   <input
                     id="c-name"
                     type="text"
                     value={form.name}
                     onChange={(e) => setForm({ ...form, name: e.target.value })}
                     className="w-full bg-transparent border-b border-line py-3 text-ink focus:outline-none focus:border-accent transition-colors"
-                    placeholder="Your name"
+                    placeholder={t('yourName')}
                   />
                 </div>
                 <div>
-                  <label htmlFor="c-email" className="text-xs tracking-[0.15em] uppercase text-ink-muted mb-2 block font-body">Email</label>
+                  <label htmlFor="c-email" className="text-xs tracking-[0.15em] uppercase text-ink-muted mb-2 block font-body">{t('email')}</label>
                   <input
                     id="c-email"
                     type="email"
                     value={form.email}
                     onChange={(e) => setForm({ ...form, email: e.target.value })}
                     className="w-full bg-transparent border-b border-line py-3 text-ink focus:outline-none focus:border-accent transition-colors"
-                    placeholder="Your email"
+                    placeholder={t('yourEmail')}
                   />
                 </div>
                 <div>
-                  <label htmlFor="c-message" className="text-xs tracking-[0.15em] uppercase text-ink-muted mb-2 block font-body">Message</label>
+                  <label htmlFor="c-message" className="text-xs tracking-[0.15em] uppercase text-ink-muted mb-2 block font-body">{t('message')}</label>
                   <textarea
                     id="c-message"
                     value={message}
@@ -230,13 +232,13 @@ export default function AboutPage({ inquirePainting }: AboutPageProps) {
                     }}
                     rows={5}
                     className="w-full bg-transparent border-b border-line py-3 text-ink focus:outline-none focus:border-accent transition-colors resize-none"
-                    placeholder="How can we help?"
+                    placeholder={t('howCanWeHelp')}
                   />
                 </div>
                 {formError && <p className="text-sm text-red-700">{formError}</p>}
                 <div className="pt-2">
                   <Button type="submit" disabled={submitting}>
-                    {submitting ? 'Sending...' : 'Send Message'}
+                    {submitting ? t('sending') : t('sendMessage')}
                   </Button>
                 </div>
               </form>

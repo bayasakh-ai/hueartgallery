@@ -1,6 +1,7 @@
 import { useGallery } from '@/hooks/useGallery';
 import { PainterCard } from '@/components/Cards';
 import { PageHeader } from '@/components/UI';
+import { useLanguage } from '@/lib/i18n';
 import LoadingScreen from '@/components/LoadingScreen';
 import ErrorState from '@/components/ErrorState';
 
@@ -10,6 +11,7 @@ interface PaintersPageProps {
 
 export default function PaintersPage({ onNavigate }: PaintersPageProps) {
   const { gallery, loading, error } = useGallery();
+  const { t } = useLanguage();
 
   if (loading) return <LoadingScreen />;
   if (error || !gallery) return <ErrorState />;
@@ -23,9 +25,9 @@ export default function PaintersPage({ onNavigate }: PaintersPageProps) {
   return (
     <div>
       <PageHeader
-        eyebrow="Artists"
-        title="Painters"
-        description={`The artists shown at ${gallery.site.name}.`}
+        eyebrow={t('artistsEyebrow')}
+        title={t('painters')}
+        description={t('artistsIntro', { name: gallery.site.name })}
       />
       <div className="px-6 md:px-10 lg:px-16 max-w-[1400px] mx-auto pb-24">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-12 lg:gap-16">

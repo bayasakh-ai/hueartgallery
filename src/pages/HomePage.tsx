@@ -1,8 +1,7 @@
 import { ArrowRight } from 'lucide-react';
 import { useGallery } from '@/hooks/useGallery';
-import { featuredEvent, formatDateRange, paragraphs, timingLabel } from '@/lib/data';
-import type { GalleryEvent } from '@/types';
-import { useReveal } from '@/hooks/useReveal';
+import { featuredEvent, paragraphs, timingKey } from '@/lib/data';
+import { useLanguage } from '@/lib/i18n';
 import { SectionTitle, Button } from '@/components/UI';
 import { PainterCard, PaintingCard } from '@/components/Cards';
 import HeroSlider from '@/components/HeroSlider';
@@ -15,6 +14,7 @@ interface HomePageProps {
 
 export default function HomePage({ onNavigate }: HomePageProps) {
   const { gallery, loading, error } = useGallery();
+  const { t } = useLanguage();
 
   if (loading) return <LoadingScreen />;
   if (error || !gallery) return <ErrorState />;
@@ -38,7 +38,7 @@ export default function HomePage({ onNavigate }: HomePageProps) {
     ? eventImages
     : [heroPainting?.image_url ?? site.home_image];
   const heroEyebrow = currentEvent
-    ? `${timingLabel[currentEvent.timing]} Exhibition${currentEvent.location ? ` · ${currentEvent.location}` : ''}`
+    ? `${t('timedExhibition', { timing: t(timingKey[currentEvent.timing]) })}${currentEvent.location ? ` · ${currentEvent.location}` : ''}`
     : [heroPainter?.name, heroPainting?.year].filter(Boolean).join(' · ') || site.tagline;
   const heroTitle = currentEvent?.title ?? heroPainting?.title ?? site.name;
   const heroText = currentEvent?.description || heroPainting?.description || '';
@@ -64,18 +64,18 @@ export default function HomePage({ onNavigate }: HomePageProps) {
             <div className="flex flex-wrap gap-4 fade-in-delay-4">
               {currentEvent ? (
                 <Button variant="solid" onClick={() => onNavigate('event-detail', currentEvent.slug)}>
-                  Event Details
+                  {t('exhibitionDetails')}
                 </Button>
               ) : (
                 <Button variant="solid" onClick={() => onNavigate('paintings')}>
-                  View Collection
+                  {t('viewCollection')}
                 </Button>
               )}
               <button
                 onClick={() => onNavigate(currentEvent ? 'paintings' : 'painters')}
                 className="px-8 py-3.5 text-xs tracking-[0.2em] uppercase font-body text-cream border border-cream/40 hover:bg-cream hover:text-ink transition-all duration-300"
               >
-                {currentEvent ? 'View Collection' : 'Explore Artists'}
+                {t(currentEvent ? 'viewCollection' : 'exploreArtists')}
               </button>
             </div>
           </div>
@@ -86,7 +86,7 @@ export default function HomePage({ onNavigate }: HomePageProps) {
       <section className="py-24 md:py-32 px-6 md:px-10 lg:px-16 max-w-[1400px] mx-auto">
         <div className="grid md:grid-cols-2 gap-12 md:gap-20 items-center">
           <div>
-            <p className="text-xs tracking-[0.2em] uppercase text-accent mb-4 font-body">Welcome to {site.name}</p>
+            <p className="text-xs tracking-[0.2em] uppercase text-accent mb-4 font-body">{t('welcomeTo', { name: site.name })}</p>
             <h2 className="font-serif-display text-4xl md:text-5xl text-ink leading-tight mb-6">
               {site.home_title}
             </h2>
@@ -107,23 +107,15 @@ export default function HomePage({ onNavigate }: HomePageProps) {
         </div>
       </section>
 
-      {/* Current Exhibition */}
-      {currentEvent && (
-        <CurrentExhibition
-          event={currentEvent}
-          onView={() => onNavigate('event-detail', currentEvent.slug)}
-        />
-      )}
-
-      {/* Featured Painters */}
+      {/* Featured Artists */}
       <section className="py-24 md:py-32 px-6 md:px-10 lg:px-16 max-w-[1400px] mx-auto">
         <div className="flex items-end justify-between mb-12">
-          <SectionTitle eyebrow="Artists" title="Featured Painters" />
+          <SectionTitle eyebrow={t('artistsEyebrow')} title={t('featuredArtists')} />
           <button
             onClick={() => onNavigate('painters')}
             className="hidden md:inline-flex items-center gap-2 text-sm text-ink-soft hover:text-ink transition-colors link-underline"
           >
-            View All <ArrowRight size={16} />
+            {t('viewAll')} <ArrowRight size={16} />
           </button>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12">
@@ -137,7 +129,7 @@ export default function HomePage({ onNavigate }: HomePageProps) {
         </div>
         <div className="mt-10 md:hidden">
           <Button variant="outline" onClick={() => onNavigate('painters')}>
-            View All Painters
+            {t('viewAllArtists')}
           </Button>
         </div>
       </section>
@@ -145,12 +137,12 @@ export default function HomePage({ onNavigate }: HomePageProps) {
       {/* Selected Paintings */}
       <section className="py-24 md:py-32 px-6 md:px-10 lg:px-16 max-w-[1400px] mx-auto bg-cream-dark/50">
         <div className="flex items-end justify-between mb-12">
-          <SectionTitle eyebrow="Available Now" title="Selected Paintings" />
+          <SectionTitle eyebrow={t('availableNow')} title={t('selectedPaintings')} />
           <button
             onClick={() => onNavigate('paintings')}
             className="hidden md:inline-flex items-center gap-2 text-sm text-ink-soft hover:text-ink transition-colors link-underline"
           >
-            View All <ArrowRight size={16} />
+            {t('viewAll')} <ArrowRight size={16} />
           </button>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-12">
@@ -165,53 +157,10 @@ export default function HomePage({ onNavigate }: HomePageProps) {
         </div>
         <div className="mt-10 md:hidden">
           <Button variant="outline" onClick={() => onNavigate('paintings')}>
-            View All Paintings
+            {t('viewAllPaintings')}
           </Button>
         </div>
       </section>
     </div>
-  );
-}
-
-function CurrentExhibition({ event, onView }: { event: GalleryEvent; onView: () => void }) {
-  const { ref, visible } = useReveal<HTMLDivElement>();
-  const dateStr = formatDateRange(event.start_date, event.end_date);
-  const label =
-    event.timing === 'current' ? 'Current Exhibition' : event.timing === 'upcoming' ? 'Upcoming Exhibition' : 'Latest Exhibition';
-
-  return (
-    <section className="relative">
-      <div
-        ref={ref}
-        className={`reveal ${visible ? 'is-visible' : ''} relative min-h-[70vh] flex items-center`}
-      >
-        <div className="absolute inset-0">
-          <img src={event.cover_url} alt={event.title} className="w-full h-full object-cover" loading="lazy" />
-          <div className="absolute inset-0 bg-ink/40" />
-        </div>
-        <div className="relative px-6 md:px-10 lg:px-16 max-w-[1400px] mx-auto py-20">
-          <div className="max-w-2xl">
-            <p className="text-xs tracking-[0.25em] uppercase text-cream/70 mb-4 font-body">
-              {label}
-            </p>
-            <h2 className="font-serif-display text-4xl md:text-5xl lg:text-6xl text-cream leading-tight mb-4">
-              {event.title}
-            </h2>
-            <p className="text-cream/70 text-sm tracking-[0.1em] uppercase mb-6 font-body">
-              {[dateStr, event.location].filter(Boolean).join(' · ')}
-            </p>
-            <p className="text-cream/80 leading-relaxed mb-8 line-clamp-3">
-              {event.description}
-            </p>
-            <button
-              onClick={onView}
-              className="px-8 py-3.5 text-xs tracking-[0.2em] uppercase font-body text-cream border border-cream/40 hover:bg-cream hover:text-ink transition-all duration-300"
-            >
-              View Exhibition
-            </button>
-          </div>
-        </div>
-      </div>
-    </section>
   );
 }

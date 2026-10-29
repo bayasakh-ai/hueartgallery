@@ -1,0 +1,21 @@
+{
+  "en": {
+    "price": 0,
+    "painter": "gan-erdene",
+    "status": "sold",
+    "title": "Two Stallions",
+    "image": "/images/gan-erdene.jpeg",
+    "details": {
+      "medium": "Silkscreen on paper",
+      "frame": "FRAMED",
+      "signature": "Signed by artist",
+      "authenticity": "Certificate of Authenticity included"
+    },
+    "size": {
+      "year": 2025,
+      "width_cm": 60,
+      "height_cm": 80
+    }
+  },
+  "mn": {}
+}
