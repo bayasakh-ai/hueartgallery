@@ -1,7 +1,8 @@
 {
   "painters": [
     {
-      "name": "Gan-Erdene"
+      "name": "Gan-Erdene.Ts",
+      "portrait": "/images/gan-erdene.jpg"
     },
     {
       "name": "Bolortuya"
