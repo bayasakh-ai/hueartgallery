@@ -92,6 +92,17 @@
       "awards": [
         "Honored Artist of Mongolia"
       ]
-    }
+    },
+    {
+      "name": "Ser-Od.G",
+      "portrait": "/images/img_1411.jpg",
+      "bio": "Artist Ser-Od was born in 1993 in Zavkhan Province, Mongolia. He is a representative of the younger generation of artists actively contributing to the field of contemporary Mongolian fine art. From 2011 to 2015, he studied painting at the School of Fine Arts of the Mongolian State University of Culture and Arts. Since 2015, he has been working as an exhibition organizer at the Union of Mongolian Artists while pursuing his own artistic practice, regularly participating in many national and international exhibitions.\nHis works are characterized by a strong conceptual approach that interweaves Mongolian nomadic life, equestrian culture, nature, and cosmic symbolism.",
+      "style": "Painting",
+      "education": "School of Fine Arts of the Mongolian State University of Culture and Arts",
+      "awards": [
+        "Member of the Union of Mongolian Artists"
+      ]
+    },
+    {}
   ]
 }
