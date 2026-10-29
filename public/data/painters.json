@@ -5,10 +5,11 @@
       "portrait": "/images/gan-erdene.jpg"
     },
     {
-      "name": "Bolortuya"
-    },
-    {
-      "name": "Tsegmed"
+      "name": "Tsegmed.Ts",
+      "portrait": "/images/1000029050.jpg",
+      "awards": [
+        "Mongolian State Honoree"
+      ]
     },
     {
       "name": "Bazarvaani"
