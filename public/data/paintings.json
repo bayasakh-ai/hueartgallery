@@ -1,9 +1,9 @@
 {
   "paintings": [
     {
-      "height_cm": 64,
+      "height_cm": 80,
       "width_cm": 60,
-      "price": "",
+      "price": 0,
       "painter": "Gan-Erdene",
       "frame": "FRAMED",
       "authenticity": "Certificate of Authenticity included",
