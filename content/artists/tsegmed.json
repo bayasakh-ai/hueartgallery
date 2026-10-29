@@ -1,6 +1,13 @@
 {
   "en": {
-    "name": "Tsegmed"
+    "name": "Tsegmed.Ts",
+    "style": "Painting",
+    "photo": "/images/1000029050.jpg",
+    "details": {
+      "awards": [
+        "Mongolian State Honoree"
+      ]
+    }
   },
   "mn": {}
 }

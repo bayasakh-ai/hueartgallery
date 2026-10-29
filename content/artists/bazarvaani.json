@@ -1,6 +1,16 @@
 {
   "en": {
-    "name": "Bazarvaani"
+    "name": "Bazarvaani.S",
+    "style": "Painting",
+    "bio": "Bazarvaan was born in 1982 in Uliastai, Zavkhan province. From 1999 to 2002, he studied at the Rajiv Gandhi School of Art and Handcrafts, and later at the School of Fine Arts, Mongolian State University of Arts and Culture from 2003 to 2008.",
+    "photo": "/images/img_1404.jpg",
+    "details": {
+      "statement": "Bazarvaan regularly participates in both national and international exhibitions. His works have been showcased in Golden Brush, Spring, Grand Art, Nude Art, as well as in exhibitions such as Mongolia on Horseback, Etugen Tenger, and Best Work of the Year. He fascinated with horses since childhood, his paintings are related in neo-realism, often infused with elements of impressionism.\nHis art transports viewers into a world of horses — at times serene and still, at times powerful and galloping with unbridled energy.",
+      "awards": [
+        "Mongolian Cultural Leading Worker",
+        "Member of the Union of Mongolian Artists"
+      ]
+    }
   },
   "mn": {}
 }

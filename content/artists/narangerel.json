@@ -1,6 +1,14 @@
 {
   "en": {
-    "name": "Narangerel"
+    "name": "Narangerel.Ts",
+    "bio": "Artist Narangerel was born in 1956 in Ulaanbaatar. He studied monumental painting at the Academy of Arts, Architecture and Design in Prague. He worked at the Union of Mongolian Artists and served for many years as a professor and dean at the Institute of Fine Arts.\nSince 1974, he has presented both solo and group exhibitions in Mongolia, USA, Turkey, China, Germany, France, Japan, and other countries, gaining recognition in the international art world. His awards include the Honored Awardee of the Union of Mongolian Artists (1991), Cultural Leading Worker (2002), and an Honored Artists of Mongolia (2012), among many others.",
+    "style": "Painting",
+    "photo": "/images/img_1405.jpg",
+    "details": {
+      "awards": [
+        "Cultural Artists of Mongolia"
+      ]
+    }
   },
   "mn": {}
 }
