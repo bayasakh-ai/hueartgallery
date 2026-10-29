@@ -29,6 +29,20 @@
       "image": "/images/bazarvaani-2.jpeg",
       "description": "",
       "year": 2026
+    },
+    {
+      "height_cm": 80,
+      "width_cm": 60,
+      "price": 0,
+      "painter": "Gan-Erdene",
+      "frame": "FRAMED",
+      "authenticity": "Certificate of Authenticity included",
+      "status": "sold",
+      "medium": "Ink, acrylic and print on paper and glass ",
+      "signature": "Signed by artist",
+      "title": "Between ",
+      "image": "/images/between-2021-80x60-cm-mischtechnik-auf-bütten-und-glas.jpg",
+      "year": 2021
     }
   ]
 }
