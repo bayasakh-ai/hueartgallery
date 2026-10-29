@@ -1,3 +1,11 @@
 {
-  "events": []
+  "events": [
+    {
+      "title": "\"HUE\" joint exhibition ",
+      "start_date": "2025-06-27",
+      "end_date": "2025-08-01",
+      "description": "Tsegmed.Ts \nBoldbaatar.S\nOchirbold.A\nBatmunkh.D\nEnkhtaivan.O\nBatjin.B",
+      "cover": "/images/unknown.jpg"
+    }
+  ]
 }
