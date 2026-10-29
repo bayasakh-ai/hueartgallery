@@ -54,6 +54,17 @@
       "awards": [
         "Honored Artists of Mongolia"
       ]
-    }
+    },
+    {
+      "name": "Davaasambuu.T",
+      "portrait": "/images/img_1408.jpg",
+      "bio": "Davaasambuu is a talented sculptor who has created a distinctive and innovative presence in the field of contemporary Mongolian sculpture. He graduated from the Mongolian University of Arts and Culture in 2009, and from the Mongolian National University of Education in 2012, and is currently pursuing a doctoral degree in Art Studies.\nSince 2010, he has been working as a sculpture lecturer, making significant contributions to guiding the younger generation. His works have been successfully showcased at international exhibitions in Germany, China, South Korea, Taiwan, Bangladesh, the United Kingdom, and other countries, with several pieces now preserved in national museums and state collections.",
+      "style": "Sculpture",
+      "education": "Mongolian University of Arts and Culture",
+      "awards": [
+        "Honored Awardee of the Union of Mongolian Artists"
+      ]
+    },
+    {}
   ]
 }
