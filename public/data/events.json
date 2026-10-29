@@ -5,7 +5,10 @@
       "start_date": "2025-06-27",
       "end_date": "2025-08-01",
       "description": "Tsegmed.Ts \nBoldbaatar.S\nOchirbold.A\nBatmunkh.D\nEnkhtaivan.O\nBatjin.B",
-      "cover": "/images/unknown.jpg"
+      "cover": "/images/unknown.jpg",
+      "gallery_images": [
+        "/images/509440803_122100485378913643_1688766252053074576_n.jpg"
+      ]
     }
   ]
 }
