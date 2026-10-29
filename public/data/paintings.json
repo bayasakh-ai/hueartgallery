@@ -1,19 +1,19 @@
 {
   "paintings": [
     {
-      "height_cm": 91,
-      "width_cm": 61,
-      "price": 2500000,
+      "height_cm": 64,
+      "width_cm": 60,
+      "price": "",
       "painter": "Gan-Erdene",
-      "frame": "Unframed (framing available)",
+      "frame": "FRAMED",
       "authenticity": "Certificate of Authenticity included",
-      "status": "available",
-      "medium": "Oil on Canvas",
+      "status": "sold",
+      "medium": "Silkscreen on paper",
       "signature": "Signed by artist",
-      "title": "Sunset Dreams",
+      "title": "Two Stallions",
       "image": "/images/gan-erdene.jpeg",
-      "description": "бүтээлийн тайлбар",
-      "year": 2024
+      "description": "",
+      "year": 2025
     },
     {
       "height_cm": 102,
