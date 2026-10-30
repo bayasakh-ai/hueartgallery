@@ -23,7 +23,7 @@ local_backend: true
 logo_url: https://decapbridge.com/decapcms-with-bridge.svg
 
 # Add site links in Decap CMS (optional)
-site_url: https://hueartgallery.netlify.app
+site_url: https://hueartgallery.bayasakhenkhtsetseg.workers.dev
 
 # The site is built with Vite, so uploaded images live in public/.
 # media_folder = where uploaded images are saved in the repo,
