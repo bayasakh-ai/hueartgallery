@@ -21,6 +21,8 @@ export interface Painting {
   painter_id: string;
   title: string;
   image_url: string;
+  /** main photo first, then any extra photos */
+  images: string[];
   year: number | null;
   medium: string;
   width_cm: number | null;
@@ -65,6 +67,8 @@ export interface SiteSettings {
   home_title: string;
   home_text: string;
   home_image: string;
+  /** home_image first, then any extra home page pictures (shown as a slider) */
+  home_images: string[];
   about_description: string;
   about_title: string;
   about_text: string;

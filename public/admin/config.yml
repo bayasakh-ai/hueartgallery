@@ -62,7 +62,14 @@ collections:
     summary: "{{title}}"
     sortable_fields: ["title", "status"]
     fields:
-      - {label: "Photo / Зураг", name: "image", widget: "image"}
+      - {label: "Main photo / Үндсэн зураг", name: "image", widget: "image"}
+      - label: "More photos / Нэмэлт зургууд"
+        name: "photos"
+        widget: "list"
+        required: false
+        collapsed: false
+        hint: "Optional: close-ups, the frame, the back... Visitors can browse them all on the painting's page."
+        field: {label: "Photo / Зураг", name: "photo", widget: "image"}
       - {label: "Title / Нэр", name: "title", widget: "string", i18n: true}
       - label: "Artist / Уран бүтээлч"
         name: "painter"
@@ -201,7 +208,14 @@ collections:
           - {label: "Footer line / Хөлийн бичиг", name: "footer_text", widget: "string", required: false, i18n: true}
           - {label: "Home page heading / Нүүр хуудасны гарчиг", name: "home_title", widget: "string", required: false, i18n: true}
           - {label: "Home page text / Нүүр хуудасны текст", name: "home_text", widget: "text", required: false, hint: "Leave a blank line between paragraphs.", i18n: true}
-          - {label: "Home page picture / Нүүр хуудасны зураг", name: "home_image", widget: "image", required: false}
+          - {label: "Home page picture / Нүүр хуудасны зураг", name: "home_image", widget: "image", required: false, hint: "Shown next to the welcome text. Add more below to make it a slider."}
+          - label: "More home page pictures / Нүүр хуудасны нэмэлт зургууд"
+            name: "home_photos"
+            widget: "list"
+            required: false
+            collapsed: false
+            hint: "Optional. These play as a slider together with the picture above."
+            field: {label: "Picture / Зураг", name: "photo", widget: "image"}
           - {label: "About page intro / Бидний тухай - оршил", name: "about_description", widget: "text", required: false, i18n: true}
           - {label: "About page heading / Бидний тухай - гарчиг", name: "about_title", widget: "string", required: false, i18n: true}
           - {label: "About page story / Бидний тухай - түүх", name: "about_text", widget: "text", required: false, hint: "Leave a blank line between paragraphs. The section is hidden if empty.", i18n: true}

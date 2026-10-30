@@ -5,6 +5,7 @@ import { useLanguage } from '@/lib/i18n';
 import { SectionTitle, Button } from '@/components/UI';
 import { PainterCard, PaintingCard } from '@/components/Cards';
 import HeroSlider from '@/components/HeroSlider';
+import ImageSlider from '@/components/ImageSlider';
 import LoadingScreen from '@/components/LoadingScreen';
 import ErrorState from '@/components/ErrorState';
 
@@ -96,14 +97,7 @@ export default function HomePage({ onNavigate }: HomePageProps) {
               </p>
             ))}
           </div>
-          <div className="image-zoom aspect-[4/3]">
-            <img
-              src={site.home_image}
-              alt={site.name}
-              className="w-full h-full object-cover"
-              loading="lazy"
-            />
-          </div>
+          <ImageSlider images={site.home_images} aspect="aspect-[4/3]" />
         </div>
       </section>
 

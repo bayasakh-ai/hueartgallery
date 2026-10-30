@@ -23,7 +23,8 @@ const FALLBACK_IMAGE = '/images/header.jpeg';
 
 /** "images/x.jpg" -> "/images/x.jpg"; bare "x.jpg" -> "/images/x.jpg"; URLs untouched. */
 export function asset(path?: string | null, fallback = ''): string {
-  const p = (path ?? '').trim();
+  // One spelling for accented names (macOS can save "ü" as "u" + accent).
+  const p = (path ?? '').trim().normalize('NFC');
   if (!p) return fallback;
   if (/^(https?:)?\/\//i.test(p) || p.startsWith('/') || p.startsWith('data:')) return p;
   return p.includes('/') ? `/${p}` : `/images/${p}`;
@@ -174,6 +175,7 @@ const DEFAULT_SITE: SiteSettings = {
   home_title: 'A space where painting speaks',
   home_text: '',
   home_image: '',
+  home_images: [],
   about_description: '',
   about_title: '',
   about_text: '',
@@ -191,11 +193,12 @@ const DEFAULT_SITE: SiteSettings = {
 function buildSite(r: Raw): SiteSettings {
   const s = { ...DEFAULT_SITE };
   (Object.keys(DEFAULT_SITE) as (keyof SiteSettings)[]).forEach((k) => {
-    if (k === 'values') return;
+    if (k === 'values' || k === 'home_images') return;
     const v = text(r[k]);
     if (v) (s[k] as string) = v;
   });
   s.home_image = asset(s.home_image, FALLBACK_IMAGE);
+  s.home_images = Array.from(new Set([s.home_image, ...list(r.home_photos).map((x) => asset(x))]));
   s.about_image = asset(s.about_image, FALLBACK_IMAGE);
   s.values = Array.isArray(r.values)
     ? (r.values as Raw[])
@@ -253,6 +256,7 @@ function build(raw: RawGallery, lang: Lang): Gallery {
     .map(({ item, p }) => {
       const slug = paintingSlug(item, text(p.title));
       const painter = painterByKey.get(text(p.painter));
+      const image = asset(text(p.image), FALLBACK_IMAGE);
       const status = ['available', 'reserved', 'sold'].includes(text(p.status))
         ? (text(p.status) as PaintingStatus)
         : 'available';
@@ -262,7 +266,8 @@ function build(raw: RawGallery, lang: Lang): Gallery {
         painter_id: painter?.id ?? '',
         painter,
         title: text(p.title),
-        image_url: asset(text(p.image), FALLBACK_IMAGE),
+        image_url: image,
+        images: Array.from(new Set([image, ...list(p.photos).map((x) => asset(x))])),
         year: num(p.year),
         medium: text(p.medium),
         width_cm: num(p.width_cm),

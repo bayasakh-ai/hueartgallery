@@ -7,7 +7,9 @@ import { PaintingCard } from '@/components/Cards';
 import LoadingScreen from '@/components/LoadingScreen';
 import ErrorState from '@/components/ErrorState';
 import { useScrollToTop } from '@/hooks/useScrollToTop';
-import { Mail } from 'lucide-react';
+import { useState } from 'react';
+import { Mail, ZoomIn } from 'lucide-react';
+import Lightbox from '@/components/Lightbox';
 
 interface PaintingDetailPageProps {
   slug: string;
@@ -19,9 +21,18 @@ interface PaintingDetailPageProps {
 export default function PaintingDetailPage({ slug, onBack, onNavigate, onInquire }: PaintingDetailPageProps) {
   const { gallery, loading, error } = useGallery();
   const { t } = useLanguage();
+  const [photo, setPhoto] = useState(0);
+  const [viewer, setViewer] = useState<number | null>(null);
   const painting = gallery?.paintings.find((p) => p.slug === slug) ?? null;
 
   useScrollToTop(slug);
+  // Back to the main photo when moving to another painting.
+  const [shownSlug, setShownSlug] = useState(slug);
+  if (shownSlug !== slug) {
+    setShownSlug(slug);
+    setPhoto(0);
+    setViewer(null);
+  }
   useDocumentTitle(painting ? `${painting.title} - ${gallery?.site.name}` : undefined);
 
   if (loading) return <LoadingScreen />;
@@ -55,9 +66,33 @@ export default function PaintingDetailPage({ slug, onBack, onNavigate, onInquire
         <div className="grid md:grid-cols-2 gap-12 md:gap-16">
           {/* Image */}
           <div className="md:sticky md:top-28 md:self-start">
-            <div className="bg-cream-dark">
-              <img src={painting.image_url} alt={painting.title} className="w-full h-auto" />
-            </div>
+            <button
+              onClick={() => setViewer(photo)}
+              className="group relative block w-full bg-cream-dark cursor-zoom-in"
+              aria-label={t('openGallery')}
+            >
+              <img src={painting.images[photo] ?? painting.image_url} alt={painting.title} className="w-full h-auto max-h-[70vh] object-contain" />
+              <span className="absolute bottom-4 right-4 inline-flex items-center gap-2 bg-ink/70 text-cream text-xs tracking-[0.1em] uppercase font-body px-3 py-2 opacity-80 group-hover:opacity-100 transition-opacity">
+                <ZoomIn size={16} />
+                {t('openGallery')}
+              </span>
+            </button>
+            {painting.images.length > 1 && (
+              <div className="mt-4 grid grid-cols-5 gap-3">
+                {painting.images.map((src, i) => (
+                  <button
+                    key={src}
+                    onClick={() => setPhoto(i)}
+                    aria-label={t('showPhoto', { n: i + 1 })}
+                    className={`aspect-square overflow-hidden bg-cream-dark transition-opacity duration-200 ${
+                      i === photo ? 'ring-2 ring-ink' : 'opacity-60 hover:opacity-100'
+                    }`}
+                  >
+                    <img src={src} alt="" className="w-full h-full object-cover" loading="lazy" />
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Details */}
@@ -138,6 +173,9 @@ export default function PaintingDetailPage({ slug, onBack, onNavigate, onInquire
       <div className="px-6 md:px-10 lg:px-16 max-w-[1400px] mx-auto pb-16 pt-8 border-t border-line">
         <Button variant="outline" onClick={onBack}>{t('backToPaintings')}</Button>
       </div>
+      {viewer !== null && (
+        <Lightbox images={painting.images} alt={painting.title} start={viewer} onClose={() => setViewer(null)} />
+      )}
     </div>
   );
 }

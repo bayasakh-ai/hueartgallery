@@ -30,6 +30,12 @@ const strings = {
   goToSlide: { en: 'Go to slide {n}', mn: '{n}-р зураг руу очих' },
   slide: { en: 'Slide {n}', mn: 'Зураг {n}' },
   previous: { en: 'Previous', mn: 'Өмнөх' },
+  close: { en: 'Close', mn: 'Хаах' },
+  zoomIn: { en: 'Zoom in', mn: 'Томруулах' },
+  zoomOut: { en: 'Zoom out', mn: 'Жижигрүүлэх' },
+  openGallery: { en: 'Click to enlarge', mn: 'Томруулж үзэх' },
+  photoCount: { en: '{n} / {total}', mn: '{n} / {total}' },
+  showPhoto: { en: 'Show photo {n}', mn: '{n}-р зургийг харах' },
   next: { en: 'Next', mn: 'Дараах' },
 
   // Exhibition timing

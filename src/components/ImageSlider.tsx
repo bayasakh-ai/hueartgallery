@@ -5,9 +5,11 @@ import { useLanguage } from '@/lib/i18n';
 interface ImageSliderProps {
   images: string[];
   captions?: string[];
+  /** Tailwind aspect-ratio class for the photo frame */
+  aspect?: string;
 }
 
-export default function ImageSlider({ images, captions }: ImageSliderProps) {
+export default function ImageSlider({ images, captions, aspect = 'aspect-[16/10]' }: ImageSliderProps) {
   const [current, setCurrent] = useState(0);
   const { t } = useLanguage();
 
@@ -28,7 +30,7 @@ export default function ImageSlider({ images, captions }: ImageSliderProps) {
 
   return (
     <div className="relative w-full">
-      <div className="relative aspect-[16/10] overflow-hidden bg-cream-dark">
+      <div className={`relative ${aspect} overflow-hidden bg-cream-dark`}>
         {images.map((img, i) => (
           <div
             key={i}

@@ -176,7 +176,7 @@ export default function PaintingsPage({ onNavigate }: PaintingsPageProps) {
             <button onClick={resetFilters} className="mt-4 text-sm text-accent link-underline">{t('clearFilters')}</button>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-12">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 md:gap-8">
             {filtered.map((painting) => (
               <PaintingCard
                 key={painting.id}
