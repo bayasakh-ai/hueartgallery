@@ -212,6 +212,7 @@ function buildSite(r: Raw): SiteSettings {
 function buildHeader(r: Raw): HomeHeader {
   return {
     images: Array.from(new Set(list(r.photos).map((x) => asset(x)))),
+    video: asset(text(r.video)),
     eyebrow: text(r.eyebrow),
     title: text(r.title),
     text: text(r.text),

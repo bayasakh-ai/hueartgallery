@@ -24,9 +24,9 @@ export default function HomePage({ onNavigate }: HomePageProps) {
   const available = paintings.filter((p) => p.status === 'available');
   const heroPainting = available[0] ?? paintings[0] ?? null;
   const heroPainter = heroPainting?.painter ?? null;
-  // Header photos set in the CMS (Home Page Header) take over the hero;
+  // Header photos/video set in the CMS (Home Page Header) take over the hero;
   // only without them does the hero show the current exhibition.
-  const useHeader = header.images.length > 0;
+  const useHeader = header.images.length > 0 || !!header.video;
   const currentEvent = useHeader ? null : featuredEvent(events);
   const featuredPainters = painters.slice(0, 3);
   const featuredPaintings = available.slice(0, 6);
@@ -59,7 +59,7 @@ export default function HomePage({ onNavigate }: HomePageProps) {
     <div>
       {/* Hero */}
       <section className="relative h-screen w-full overflow-hidden">
-        <HeroSlider images={heroImages} alt={heroTitle} />
+        <HeroSlider images={heroImages} video={useHeader ? header.video : undefined} alt={heroTitle} />
         <div className="relative h-full flex flex-col justify-end pb-20 px-6 md:px-10 lg:px-16 max-w-[1400px] mx-auto">
           <div className="max-w-2xl">
             <p className="text-xs tracking-[0.25em] uppercase text-cream/80 mb-6 font-body fade-in-delay-1">
