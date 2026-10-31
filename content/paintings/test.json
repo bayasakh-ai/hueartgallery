@@ -1,0 +1,20 @@
+{
+  "en": {
+    "status": "reserved",
+    "image": "/images/_dsc0494.jpg",
+    "photos": [
+      "/images/_dsc0231.jpg",
+      "/images/_dsc0233.jpg",
+      "/images/_dsc0546.jpg"
+    ],
+    "description": "TEST",
+    "size": {
+      "year": 2026,
+      "width_cm": 2500,
+      "height_cm": 1200
+    },
+    "painter": "batjin-b",
+    "title": "TEST"
+  },
+  "mn": {}
+}
