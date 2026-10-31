@@ -2,6 +2,7 @@ import type {
   EventTiming,
   Gallery,
   GalleryEvent,
+  HomeHeader,
   Painter,
   Painting,
   PaintingStatus,
@@ -11,7 +12,7 @@ import type { Lang, StringKey } from '@/lib/i18n';
 
 /*
   Reads the JSON files built from the CMS content (see vite.config.ts):
-    /data/site.json, /data/painters.json, /data/paintings.json, /data/events.json
+    /data/site.json, /data/home.json, /data/painters.json, /data/paintings.json, /data/events.json
   and turns them into linked objects (a painting knows its painter, an
   event knows its painters and paintings). Nothing here talks to a server
   other than fetching those static files.
@@ -208,8 +209,18 @@ function buildSite(r: Raw): SiteSettings {
   return s;
 }
 
+function buildHeader(r: Raw): HomeHeader {
+  return {
+    images: Array.from(new Set(list(r.photos).map((x) => asset(x)))),
+    eyebrow: text(r.eyebrow),
+    title: text(r.title),
+    text: text(r.text),
+  };
+}
+
 interface RawGallery {
   site: RawItem | null;
+  home: RawItem | null;
   painters: RawItem[];
   paintings: RawItem[];
   events: RawItem[];
@@ -318,7 +329,13 @@ function build(raw: RawGallery, lang: Lang): Gallery {
       };
     });
 
-  return { site: buildSite(inLang(raw.site, lang)), painters, paintings, events };
+  return {
+    site: buildSite(inLang(raw.site, lang)),
+    header: buildHeader(inLang(raw.home, lang)),
+    painters,
+    paintings,
+    events,
+  };
 }
 
 let rawCache: Promise<RawGallery> | null = null;
@@ -328,12 +345,14 @@ function loadRaw(): Promise<RawGallery> {
   if (!rawCache) {
     rawCache = Promise.all([
       getJson<RawItem>('site').catch(() => null),
+      getJson<RawItem>('home').catch(() => null),
       getJson<{ painters?: RawItem[] }>('painters'),
       getJson<{ paintings?: RawItem[] }>('paintings'),
       getJson<{ events?: RawItem[] }>('events'),
     ])
-      .then(([site, painters, paintings, events]) => ({
+      .then(([site, home, painters, paintings, events]) => ({
         site,
+        home,
         painters: painters.painters ?? [],
         paintings: paintings.paintings ?? [],
         events: events.events ?? [],

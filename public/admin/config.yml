@@ -192,6 +192,29 @@ collections:
             multiple: true
             required: false
 
+  # --------------------------------------------------------- Home page header
+  - name: "home_header"
+    label: "Home Page Header / Нүүр хуудасны толгой зураг"
+    description: "The big photos across the top of the home page. Separate from exhibitions."
+    i18n: true
+    files:
+      - name: "home_header"
+        label: "Home Page Header / Нүүр хуудасны толгой зураг"
+        file: "content/home.json"
+        format: "json"
+        i18n: true
+        fields:
+          - label: "Header photos / Толгой зургууд"
+            name: "photos"
+            widget: "list"
+            required: false
+            collapsed: false
+            hint: "Big photos across the top of the home page. Add 2 or more and they slide by themselves; drag to change the order. If empty, the current exhibition is shown there instead."
+            field: {label: "Photo / Зураг", name: "photo", widget: "image"}
+          - {label: "Small line above the heading / Гарчгийн дээрх жижиг бичиг", name: "eyebrow", widget: "string", required: false, hint: "Optional. If empty, the tagline is used.", i18n: true}
+          - {label: "Heading / Гарчиг", name: "title", widget: "string", required: false, hint: "Optional. If empty, the gallery name is used.", i18n: true}
+          - {label: "Text / Текст", name: "text", widget: "text", required: false, hint: "Optional. A short sentence under the heading.", i18n: true}
+
   # ------------------------------------------------------------ Site settings
   - name: "site"
     label: "Site Settings / Тохиргоо"

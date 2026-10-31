@@ -20,29 +20,40 @@ export default function HomePage({ onNavigate }: HomePageProps) {
   if (loading) return <LoadingScreen />;
   if (error || !gallery) return <ErrorState />;
 
-  const { site, painters, paintings, events } = gallery;
+  const { site, header, painters, paintings, events } = gallery;
   const available = paintings.filter((p) => p.status === 'available');
   const heroPainting = available[0] ?? paintings[0] ?? null;
   const heroPainter = heroPainting?.painter ?? null;
-  const currentEvent = featuredEvent(events);
+  // Header photos set in the CMS (Home Page Header) take over the hero;
+  // only without them does the hero show the current exhibition.
+  const useHeader = header.images.length > 0;
+  const currentEvent = useHeader ? null : featuredEvent(events);
   const featuredPainters = painters.slice(0, 3);
   const featuredPaintings = available.slice(0, 6);
   const introParagraphs = paragraphs(site.home_text);
 
-  // Hero: the current/next exhibition's photos when there is one (cover +
-  // any exhibition photos added in the CMS, in order, de-duplicated), else
-  // a single available painting, else the site's default home picture.
+  // Without header photos: the current/next exhibition's photos when there
+  // is one (cover + its photos, in order, de-duplicated), else a single
+  // available painting, else the site's default home picture.
   const eventImages = currentEvent
     ? Array.from(new Set([currentEvent.cover_url, ...currentEvent.gallery_images].filter(Boolean)))
     : [];
-  const heroImages = eventImages.length > 0
-    ? eventImages
-    : [heroPainting?.image_url ?? site.home_image];
-  const heroEyebrow = currentEvent
-    ? `${t('timedExhibition', { timing: t(timingKey[currentEvent.timing]) })}${currentEvent.location ? ` · ${currentEvent.location}` : ''}`
-    : [heroPainter?.name, heroPainting?.year].filter(Boolean).join(' · ') || site.tagline;
-  const heroTitle = currentEvent?.title ?? heroPainting?.title ?? site.name;
-  const heroText = currentEvent?.description || heroPainting?.description || '';
+  const heroImages = useHeader
+    ? header.images
+    : eventImages.length > 0
+      ? eventImages
+      : [heroPainting?.image_url ?? site.home_image];
+  const heroEyebrow = useHeader
+    ? header.eyebrow || site.tagline
+    : currentEvent
+      ? `${t('timedExhibition', { timing: t(timingKey[currentEvent.timing]) })}${currentEvent.location ? ` · ${currentEvent.location}` : ''}`
+      : [heroPainter?.name, heroPainting?.year].filter(Boolean).join(' · ') || site.tagline;
+  const heroTitle = useHeader
+    ? header.title || site.name
+    : currentEvent?.title ?? heroPainting?.title ?? site.name;
+  const heroText = useHeader
+    ? header.text
+    : currentEvent?.description || heroPainting?.description || '';
 
   return (
     <div>

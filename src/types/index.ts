@@ -83,8 +83,18 @@ export interface SiteSettings {
   facebook: string;
 }
 
+/** The big photo slider at the top of the home page (CMS: Home Page Header). */
+export interface HomeHeader {
+  /** Empty when no header photos are set: the home page then shows the current exhibition. */
+  images: string[];
+  eyebrow: string;
+  title: string;
+  text: string;
+}
+
 export interface Gallery {
   site: SiteSettings;
+  header: HomeHeader;
   painters: Painter[];
   paintings: Painting[];
   events: GalleryEvent[];
