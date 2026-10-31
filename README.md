@@ -4,6 +4,7 @@ React + Vite + Tailwind site. All content comes from JSON files that the CMS edi
 
     public/data/paintings.json   public/data/painters.json
     public/data/events.json      public/data/site.json (gallery info, About/Home text)
+    content/home.json            home page header photos (CMS: Home Page Header)
     public/images/               uploaded photos
     public/admin/                Decap CMS (login via DecapBridge) -> yoursite.netlify.app/admin/
 

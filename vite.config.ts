@@ -7,10 +7,10 @@ import { join } from 'node:path';
 /*
   The CMS (public/admin) saves one JSON file per item in content/:
     content/paintings/*.json, content/artists/*.json, content/exhibitions/*.json,
-    content/site.json
+    content/site.json, content/home.json (home page header)
   Each file holds { "en": {...}, "mn": {...} }. This plugin combines them into
   the files the site loads: /data/paintings.json, /data/painters.json,
-  /data/events.json, /data/site.json (served live in dev, written on build).
+  /data/events.json, /data/site.json, /data/home.json (served live in dev, written on build).
 */
 const CONTENT = fileURLToPath(new URL('./content', import.meta.url));
 const LISTS: Record<string, { folder: string; key: string }> = {
@@ -24,8 +24,8 @@ function readJson(file: string): unknown {
 }
 
 function buildData(name: string): string | null {
-  if (name === 'site.json') {
-    const file = join(CONTENT, 'site.json');
+  if (name === 'site.json' || name === 'home.json') {
+    const file = join(CONTENT, name);
     return existsSync(file) ? JSON.stringify(readJson(file)) : null;
   }
   const list = LISTS[name];
@@ -53,7 +53,7 @@ function contentData(): Plugin {
       });
     },
     generateBundle() {
-      for (const name of ['site.json', ...Object.keys(LISTS)]) {
+      for (const name of ['site.json', 'home.json', ...Object.keys(LISTS)]) {
         const source = buildData(name);
         if (source) this.emitFile({ type: 'asset', fileName: `data/${name}`, source });
       }
