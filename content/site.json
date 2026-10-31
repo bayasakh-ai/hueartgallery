@@ -1,5 +1,9 @@
 {
   "en": {
+    "home_photos": [
+      "/images/ev1.jpg",
+      "/images/ev3.jpg"
+    ],
     "values": [],
     "hours_note": "",
     "facebook": "",
