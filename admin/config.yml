@@ -19,7 +19,7 @@ backend:
 logo_url: https://decapbridge.com/decapcms-with-bridge.svg
 
 # Add site links in Decap CMS (optional)
-site_url: https://hueartgallery.netlify.app
+site_url: https://hueartgallery.bayasakhenkhtsetseg.workers.dev
 
 # Where images you upload through the CMS get stored, and how the site
 # should link to them. Your existing images (gan-erdene.jpeg etc.) stay
